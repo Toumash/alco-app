@@ -25,7 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.webapi.Reporter;
+import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.WebLogin;
 
 import java.io.BufferedReader;
@@ -204,7 +204,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
                                         if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
-                                        new Reporter(context).execute(json.toString());
+                                        new AlcoholReporter(context).execute(json.toString());
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -223,7 +223,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
 
     @Deprecated
     private boolean showChangeLogOnFirstRun(@NotNull SharedPreferences sharedPreferences) {
-        boolean firstRun = sharedPreferences.getBoolean(Const.Prefs.FIRST_RUN, true);
+        boolean firstRun = sharedPreferences.getBoolean(Const.Prefs.Main.FIRST_RUN, true);
 
         if (firstRun) {
             AlertDialog.Builder changeLog = new AlertDialog.Builder(context);
@@ -231,7 +231,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                     .setTitle(R.string.whatsNew).setCancelable(false);
             changeLog.setPositiveButton(android.R.string.ok, null);
             changeLog.create().show();
-            sharedPreferences.edit().putBoolean(Const.Prefs.FIRST_RUN, false).commit();
+            sharedPreferences.edit().putBoolean(Const.Prefs.Main.FIRST_RUN, false).commit();
             return true;
         }
         return false;

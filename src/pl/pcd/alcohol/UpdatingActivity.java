@@ -30,8 +30,10 @@ public class UpdatingActivity extends TitleActivity {
     @Override
     protected void onCreate(Bundle x) {
         super.onCreate(x);
+        SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+
         if (Utils.isConnected(getApplicationContext())) {
-            SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+
             if (Cfg.DEBUG)
                 Log.d("Updater", sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true) ? "AutoUpdater < ON >" : "AutoUpdater < OFF >");
             if (sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true)) {
@@ -52,6 +54,22 @@ public class UpdatingActivity extends TitleActivity {
         } else {
             if (Cfg.DEBUG) Log.d("Updater", "Not connected");
         }
+
+        //TODO:installation_id sending
+/*        if (sharedPreferences.getBoolean(Const.Prefs.Main.FIRST_RUN, true)) {
+            String id = Installation.id(getApplicationContext());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Const.Prefs.Main.INSTALLATION_ID,id);
+            editor.putBoolean(Const.Prefs.Main.FIRST_RUN, false);
+            new AsyncTask<String, Void, String>(){
+
+                @Override
+                protected String doInBackground(String... json) {
+                    return JSONTransmitter.postJSON(json[0],Const.API.URL_JSON);
+                }
+            }
+        }*/
     }
 
     public static class Updater extends AsyncTask<Void, Integer, Void> {
@@ -123,7 +141,7 @@ public class UpdatingActivity extends TitleActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
                 context.startActivity(intent);*/
-                sharedPreferences.edit().putBoolean(Const.Prefs.FIRST_RUN, true).commit();
+                sharedPreferences.edit().putBoolean(Const.Prefs.Main.FIRST_RUN, true).commit();
             } catch (IOException e) {
                 Log.d("Updater", e.toString());
                 error = new Runnable() {

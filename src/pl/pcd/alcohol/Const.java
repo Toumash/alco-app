@@ -51,11 +51,9 @@ public class Const {
             public static final String RATE = "rate";
         }
 
-
     }
 
     public static final class Prefs {
-        public static final String FIRST_RUN = "first_run";
 
         public static final class WEB_API {
             public static final String FILE = "webapi";
@@ -73,6 +71,8 @@ public class Const {
             public static final String LAST_UPDATE_CHECK = "last_update";
             public static final String AUTO_UPDATE = "autoUpdate";
             public static final String COMMENTS_AUTO_REFRESH = "cm_auto_refresh";
+            public static final String FIRST_RUN = "first_run";
+            public static final String INSTALLATION_ID = "id";
         }
 
     }

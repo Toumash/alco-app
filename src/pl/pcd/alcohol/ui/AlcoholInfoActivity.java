@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.RatingsDownloader;
-import pl.pcd.alcohol.webapi.Reporter;
 import pl.pcd.alcohol.webapi.WebLogin;
 
 public class AlcoholInfoActivity extends TitleActivity {
@@ -305,7 +305,7 @@ public class AlcoholInfoActivity extends TitleActivity {
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
                                 if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
-                                new Reporter(context).execute(json.toString());
+                                new AlcoholReporter(context).execute(json.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

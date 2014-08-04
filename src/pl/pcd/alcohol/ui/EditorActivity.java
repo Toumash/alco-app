@@ -7,8 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import org.jetbrains.annotations.NotNull;
-import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.Cfg;
 import pl.pcd.alcohol.Const.EditIntentExtras;
+import pl.pcd.alcohol.DBUser;
+import pl.pcd.alcohol.R;
+import pl.pcd.alcohol.TitleActivity;
 
 import java.util.ArrayList;
 import java.util.List;
