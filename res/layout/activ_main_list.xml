@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/linearRoot_main_db">
+    <!-- no margins for editText - Bigger clicking area (UX++) -->
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:singleLine="true"
+            android:id="@+id/main_search"
+            android:hint="@string/search"/>
+
+    <ListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/main_db_list_view"
+            android:fastScrollEnabled="true"
+            android:smoothScrollbar="true"
+            android:fastScrollAlwaysVisible="false"
+            android:longClickable="true"
+            android:keepScreenOn="true"/>
+
+</LinearLayout>

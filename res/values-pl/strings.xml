@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="version">Wersja</string>
+    <string name="forceUpdate">Wymuś aktualizację</string>
+    <string name="release">Wydanie</string>
+    <string name="update">Uaktualnij</string>
+    <string name="author">Autor</string>
+    <string name="whatsNew">Co nowego ?</string>
+    <string name="error">Błąd</string>
+    <string name="experimental">Experymentalne</string>
+    <string name="log_in">Zaloguj się</string>
+    <string name="log_out">Wyloguj</string>
+
+    <string name="updating">Aktualizowanie&#8230;</string>
+    <string name="no_internet">Brak połączenia z internetem</string>
+    <string name="editor">Edytor</string>
+    <string name="no_records">Brak wpisów. Dodaj je w Edytorze</string>
+    <string name="search">Szukaj&#8230;</string>
+    <string name="add">Dodaj</string>
+    <string name="upload_proposals">Wyślij Propozycje</string>
+    <string name="no_records_to_send">Brak danych do wysłania</string>
+    <string name="are_you_sure_delete">Potwierdź usuwanie</string>
+    <string name="are_you_sure">Potwierdź akcję</string>
+    <string name="changelog_news">Nowości w wersji</string>
+    <string name="sent">Wysłano</string>
+    <string name="download_db">Pobierz Dane</string>
+    <string name="downloading_db">Pobieranie danych&#8230;</string>
+    <string name="downloading_db_ok">Pobieranie zakończone!</string>
+    <string name="not_logged_in">Nie zalogowany</string>
+    <string name="password">Hasło</string>
+
+    <string name="settings">Ustawienia</string>
+    <string name="my_proposals">Moje propozycje</string>
+    <string name="alcohol_list">Lista Alkoholi</string>
+
+
+    <string name="name">Nazwa: </string>
+    <string name="type">Typ: </string>
+    <string name="subtype">Podtyp: </string>
+    <string name="volume">Objętość: </string>
+    <string name="percent">Procent: </string>
+    <string name="price">Cena: </string>
+    <string name="deposit">Kaucja: </string>
+    <string name="volume_unit">ml</string>
+    <string name="waluta">zł</string>
+    <string name="alcohol_added">Alcohol dodany</string>
+
+    <!--  LOGIN ACTIVITY  -->
+
+    <string name="login_activity">Logowanie</string>
+    <string name="login_username">Nazwa użytkownika: </string>
+    <string name="login_password">Hasło: </string>
+    <string name="login_ok">Zaloguj</string>
+    <string name="login_successful">Zalogowano</string>
+    <string name="network_error">Błąd połączenia</string>
+    <string name="connecting">Łączenie&#8230;</string>
+    <string name="about_desc">Code Sharks Team 2014</string>
+    <string name="login_invalid_data">Niepoprawna nazwa użytkownika i/lub hasło</string>
+    <string name="server_error">Wewnętrzny błąd serwera</string>
+    <string name="or">Lub</string>
+    <string name="login_email">Email</string>
+
+    <!--    PROFILE_ACTIVITY   -->
+    <string name="profile_title">Twój Profil</string>
+    <string name="account">Konto</string>
+    <string name="profile_male">Mężczyzna</string>
+    <string name="profile_female">Kobieta</string>
+    <string name="profile_weight">Waga</string>
+    <string name="sex">Płeć</string>
+    <string name="profile_no_data">N/A</string>
+    <string name="profile_ratings">Ocen</string>
+
+    <!--    REGISTER ACTIVITY -->
+    <string name="register_title">Rejestracja</string>
+    <string name="register_register">Zarejestruj</string>
+    <string name="email_in_use">Email juz w uzyciu</string>
+    <string name="registration_successfull">Zarejestrowano pomyslnie. Aby aktywowac konto nalezy kliknac w link aktywacyjny, ktory wyslalismy ci na maila. Jezeli nie mozesz go znalezc, koniecznie sprawdz folder SPAM</string>
+    <string name="activate_your_accout">Sprawdź swoją skrzynkę pocztową i aktywuj konto</string>
+
+
+    <!-- Updating -->
+    <string name="update_title">Aktualizacja</string>
+    <string name="update_available">Dostępna aktualizacja</string>
+    <string name="no_thanks">Nie, dzięki</string>
+    <string name="update_changelog">Zmiany w nowej wersji</string>
+
+    <!-- PREFERENCES -->
+    <string name="prefs_auto_update">Autoaktualizacja</string>
+    <string name="prefs_auto_update_desc">Sprawdza aktualizacje raz dzienie</string>
+    <string name="loggin_in">Logowanie&#8230;</string>
+    <string name="flag_additional">Dodatkowe informacje:</string>
+    <string name="flag">Zgłoś</string>
+    <string name="enter_data">Wprowadź dane</string>
+    <string name="give_us_additional_info">Opisz przyczynę zgłoszenia. Co jest z tym alkoholem nie tak?</string>
+    <string name="prefs_about">O nas</string>
+    <string name="sending">Wysyłanie&#8230;</string>
+    <string name="pref_report_issue_summary">Prześlij sugestie/błąd</string>
+    <string name="pref_report_issue">Zgłoś Błąd</string>
+    <string name="pref_changelog">Lista Zmian</string>
+    <string name="pref_changelog_summary">Opis nowości w kolejnych wersjach</string>
+    <string name="prefs_app">Aplikacja</string>
+    <string name="prefs_comments_auto_load">Autoładuj komentarze</string>
+    <string name="prefs_comments_auto_load_sum">Ładuje komentarze tuż po wejściu do szczegółowego widoku alkoholu</string>
+    <string name="prefs_logout_do_you_dare">Wylogować?</string>
+
+    <!-- REPORT BUG -->
+    <string name="report_thanks_for">Dziękujemy za feedback. Sprawdz maila aby śledzić na bieżąco swoje zgłoszenie</string>
+    <string name="report_bug_title">Tytuł/Nazwa Buga</string>
+    <string name="report_bug_description">Szczegóły</string>
+    <string name="report_title_too_short">Tytuł za krótki</string>
+    <string name="report_bug_type">Typ</string>
+    <string name="report_bug_priority">Priorytet</string>
+
+
+    <!-- ALCOHOLINFO -->
+    <string name="alcoholinfo_no_ratings">brak komentarzy</string>
+    <string name="alcoholinfo_refresh_comments">Odśwież komentarze</string>
+    <string name="alcoholinfo_rate_alcohol">Oceń ten trunek</string>
+    <string name="alcoholinfo_opinions">Opinie</string>
+    <string name="alcoholinfo_see_more">Więcej</string>
+    <string name="alcoholinfo_your_opinion">Twoja recenzja:</string>
+    <string name="alcoholinfo_ratings_autoload_off">Autoładowanie komentarzy wyłączone</string>
+
+    <!-- MORE RATINGS -->
+    <string name="more_ratings_title">Komentarze</string>
+    <string name="nope">nie</string>
+
+
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="menu_user_db">
+        <item>Edytuj</item>
+        <item>Usuń</item>
+    </array>
+    <array name="menu_main_db">
+        <item>Zgłoś</item>
+        <!--<item></item>-->
+    </array>
+
+</resources>

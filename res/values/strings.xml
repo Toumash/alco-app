@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Alcohol Ranker</string>
+    <string name="AppVersion">0.0.5.140804</string>
+    <string name="version">Version</string>
+    <string name="forceUpdate">Force an update</string>
+    <string name="release">Release</string>
+    <string name="author">Author</string>
+    <string name="about_us">Code Sharks Leader Toumash</string>
+    <string name="update">Update</string>
+    <string name="readonly">Read-Only</string>
+    <string name="whatsNew">What\'s new ?</string>
+    <string name="error">Error</string>
+    <string name="experimental">Experimental</string>
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
+
+    <string name="updating">Updating&#8230;</string>
+    <string name="no_internet">No internet connection available</string>
+
+
+    <string name="editor">Editor</string>
+    <string name="no_records">No records. Add them using Editor</string>
+    <string name="search">Search&#8230;</string>
+    <string name="add">Add</string>
+    <string name="upload_proposals">Upload DB</string>
+    <string name="no_records_to_send">No data to send</string>
+    <string name="are_you_sure_delete">Delete?</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="changelog_news">Release\'s new features</string>
+    <string name="sent">Sent</string>
+    <string name="download_db">Download db</string>
+    <string name="downloading_db">Downloading database&#8230;</string>
+    <string name="downloading_db_ok">Downloading Complete!</string>
+    <string name="not_logged_in">Not logged in</string>
+
+    <string name="password">Password</string>
+    <string name="settings">Settings</string>
+    <string name="my_proposals">My list</string>
+    <string name="alcohol_list">Alcohol List</string>
+    <string name="login_activity">Login</string>
+
+
+    <string name="name">Name: </string>
+    <string name="type">Type: </string>
+    <string name="subtype">Subtype: </string>
+    <string name="volume">Volume: </string>
+    <string name="percent">Percent: </string>
+    <string name="price">Price: </string>
+    <string name="deposit">Deposite: </string>
+    <string name="volume_unit">ml</string>
+    <string name="waluta">zł</string>
+    <string name="alcohol_added">Alcohol added</string>
+
+    <string name="doge">doge hau wow</string>
+
+    <!--  LOGIN ACTIVITY  -->
+
+    <string name="login_ok">Log in</string>
+    <string name="login_username">Username: </string>
+    <string name="login_password">Password: </string>
+    <string name="login_successful">Logged in successfully</string>
+    <string name="network_error">Network error</string>
+    <string name="connecting">Connecting&#8230;</string>
+    <string name="about_desc">Code Sharks Team 2014</string>
+    <string name="login_invalid_data">Invalid username or/and password</string>
+    <string name="server_error">Server Internal Error</string>
+    <string name="or">Or</string>
+    <string name="login_email">Email</string>
+
+
+    <!--    PROFILE_ACTIVITY   -->
+
+    <string name="profile_title">Your Profile</string>
+    <string name="account">Account</string>
+    <string name="profile_male">Male</string>
+    <string name="profile_female">Female</string>
+    <string name="profile_weight">Weight</string>
+    <string name="sex">Sex</string>
+    <string name="profile_no_data">N/A</string>
+    <string name="profile_ratings">Ratings</string>
+
+    <!--    REGISTER ACTIVITY -->
+    <string name="register_title">Register</string>
+    <string name="register_register">Register</string>
+    <string name="email_in_use">Email already in use</string>
+    <string name="registration_successfull">Registered successfully. Please check your email inbox. Especially the SPAM folder</string>
+
+
+    <!--   UPDATING   -->
+    <string name="update_title">Aktualizacja</string>
+    <string name="update_available">Dostępna aktualizacja</string>
+    <string name="no_thanks">Nie, dzięki</string>
+    <string name="update_changelog">New features</string>
+    <string name="activate_your_accout">Please check your email inbox and activate your account</string>
+
+
+    <!--   PREFERENCES   -->
+    <string name="prefs_auto_update">Auto-Update</string>
+    <string name="prefs_auto_update_desc">Checks for updates once a day</string>
+    <string name="loggin_in">Logging in&#8230;</string>
+    <string name="flag_additional">Additional info</string>
+    <string name="flag">Report</string>
+    <string name="enter_data">Enter some data</string>
+    <string name="give_us_additional_info">Enter some additional info. What is wrong with this alcohol?</string>
+    <string name="prefs_about">About</string>
+    <string name="sending">Sending&#8230;</string>
+    <string name="pref_report_issue_summary">Send us a precise error description or proposal</string>
+    <string name="pref_report_issue">Report Bug</string>
+    <string name="pref_changelog">Change Log</string>
+    <string name="pref_changelog_summary">Description of every version</string>
+    <string name="prefs_app">App</string>
+    <string name="prefs_comments_auto_load">Comments Autoloading</string>
+    <string name="prefs_comments_auto_load_sum">Loads comments after entering to alcohol\'s detailed view</string>
+    <string name="prefs_logout_do_you_dare">Log out?</string>
+
+    <!-- BUG REPORTER -->
+
+    <string name="report_thanks_for">Thanks for feedback. Check your email to be up-to-date with your request</string>
+    <string name="report_bug_title">Bug Title/Name</string>
+    <string name="report_bug_description">Description</string>
+    <string name="report_title_too_short">Title too short</string>
+    <string name="report_bug_type">Type</string>
+    <string name="report_bug_priority">Priority</string>
+    <string name="info">Info</string>
+
+
+    <!-- ALCOHOLINFO   -->
+    <string name="alcoholinfo_no_ratings">no ratings</string>
+    <string name="alcoholinfo_refresh_comments">Refresh comments</string>
+    <string name="alcoholinfo_rate_alcohol">Rate this alcohol</string>
+    <string name="alcoholinfo_opinions">Ratings</string>
+    <string name="alcoholinfo_see_more">More</string>
+    <string name="alcoholinfo_your_opinion">Your opinion:</string>
+    <string name="alcoholinfo_ratings_autoload_off">Ratings autoload is off</string>
+
+    <!-- MORE RATINGS -->
+    <string name="more_ratings_title">Comments</string>
+    <string name="nope">no</string>
+
+
+</resources>

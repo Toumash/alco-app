@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:title="@string/flag"
+            android:id="@+id/menu_alcoholinfo_flag"
+            android:showAsAction="never"
+            android:orderInCategory="1"
+            android:icon="@drawable/ic_menu_report"/>
+    <item
+            android:title="@string/alcoholinfo_refresh_comments"
+            android:id="@+id/menu_alcoholinfo_refresh"
+            android:showAsAction="ifRoom"
+            android:orderInCategory="2"
+            android:icon="@drawable/ic_action_refresh"/>
+
+    <item
+            android:title="@string/settings"
+            android:id="@+id/menu_alcoholinfo_settings"
+            android:showAsAction="never"
+            android:orderInCategory="3"
+            android:icon="@android:drawable/ic_menu_preferences"/>
+</menu>

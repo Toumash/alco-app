@@ -1,0 +1,118 @@
+->0.0.5.140804
++po wybraniu wódki niedostępne jest wybranie kaucji
++wyswietlenie łącznej liczby ocen alkoholi
+
+->0.0.5.140726
++komentarze
++dodawanie komentarzy
++ładniejszy wygląd szczegółów alkoholu
+
+->0.0.4.140725
++szczegółowy widok alkoholi
++wyświetlanie typów oraz subtypów
++oglądanie komentarzy
++lepsza implementacja listy - szybsza
+
+->0.0.4.140724
++lepszy system flagowania alkolu
+
+->0.0.4.140722
++całkowicie naprawiony edytor
++widok profilu
++Sherlock ActionBar dla starszych urządzeń
++lepsze pobieranie
+
+->0.0.4.140721
++wykorzystanie api issue trackera bitbucketa
++przyjemna aktywnosc do publikowania bugów
++swipe do moich propozycji
++aktywność informacji o alkoholu
+
+->0.0.4.140720
++duże zmiany w strukturze serwera. Zapraszamy do testowania.
++usunięta aktywność "O nas"
++publiczny tracker błędów, bez przymusu rejestracji
++lepsze ustawienia
+
+->0.0.4.140718
++WSZYSTKIEGO NAJLEPSZEGO MARIO
+
+->0.0.4.140717
++naprawiono małe błędy  z logowaniem w niecodzienych przypadkach
++Zgłaszanie błędow z progresem
++zapraszamy do  testowania
+
+->0.0.3.140715
++ulepszona obsługa logowania oraz przełączania między oknami w przypadku niezalogowania
++auto-aktualizacja przy włączaniu aplikacji
++przypomnienie o aktywacji konta przy logowaniu
++zgłaszanie błędow w bazie alkoholi
++ogólne ulepszenia
+
+->0.0.3.140707
++naprawiono małe błędy z główną lista
+
+->0.0.3.140705
++płynniejsze ściaganie alkoholi
++ladne paski tytułowe dla starszych urządzeń
++lepsze ikonki szukania dla każdej wersji
++pełna obsługa titleBara
++rejestreacja (nie działa na serwie)
++dzialajaca rejestracja
+
+->0.0.2.140701
++poprawiono literówki w typach piwa
++niezawodne logowanie
++ladniejszy kolor dla nazw alkoholi
++przeszukiwanie bazy danych
++niezależność wielkości znaków w szukaniu
+
+->0.0.2.140629
++prostsze i szybsze api
++WebAPI w jsonie
++EXPERYMENTALNE: logowanie (w opcjach)
+
+->0.0.2.140620
++usunieto bug przy wysyłaniu pustej bazy danych
++lepsza nazwa
++szybsze listy
+
+->0.0.2.140613
++skonfigurowany bitbucket do pracy drużynowej
++to samo ze stroną
++zakupiona nowa domena(.pl) oraz serwer
++działające dodawanie alkoholu z typami
++dodano opcję dodania kaucji
+
+->0.0.2.140611
++działające okno ustawień na starszych urządzeniach
+
+->0.0.2.140609
++w pełni działający upload propozycji
++poprawione błędy uploadu,działa w każdym przypadku niezależnie od wersji i języka
++ikonka odswiezania w głównej liście
+
+->0.0.2.140608
++w pelni działające ściąganie
++odswiezajaca sie automatycznie lista
++edytor sprawdza podstawowe błędy
++ogolne ulepszenia
++znany bug: nie działa wysyłanie alko z polskimi znakami :C (trudne)
+
+->0.0.2.140607
++lepszy wygląd na starszych urządzeniach (2.1 - 2.3.6)
++usprawnione działanie bazy
++po wgraniu na serwer automatyczne usuwanie danych lokalnych
+
+-> 0.0.2.140605
++mozliwosc wgrywania na serwer swoich propozycje (EXPERIMENT!)
+
+-> 0.0.1.140525
++wydajnosc++
++db_update
++skonczone szkielety Aktywności
++rozpoczęte prace nad baza danych na serwerze (dev.pcd.c0.pl)
+
+-> 0.0.1.140524
++dodano podstawowe narzędzia(edycja i dodawanie)
++Pierwsza wersja aplikacji sprawna baza danych

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="menu_user_db">
+        <item>Edit</item>
+        <item>Delete</item>
+    </array>
+    <array name="menu_main_db">
+        <item>Report</item>
+        <!--<item></item>-->
+    </array>
+
+    <array name="typy">
+        <item>Niskoprocentowe</item>
+        <item>Srednioprocentowe</item>
+        <item>Wysokoprocentowe</item>
+    </array>
+
+    <array name="wysokoprocentowe">
+        <item>Spirytus</item>
+        <item>Wódka czysta</item>
+        <item>Wódka smakowa</item>
+        <item>Nalewka</item>
+        <item>Likier</item>
+        <item>Whisky</item>
+        <item>Tequila</item>
+        <item>Rum</item>
+        <item>Brandy</item>
+        <item>Burbon</item>
+        <item>Gin</item>
+        <item>Abstynt</item>
+    </array>
+    <array name="srednioprocentowe">
+        <item>Wino czerwone</item>
+        <item>Wino białe</item>
+        <item>Wino różowe</item>
+        <item>Szampan</item>
+        <item>Cydr</item>
+    </array>
+    <array name="niskoprocentowe">
+        <item>Piwo jasne</item>
+        <item>Piwo ciemne</item>
+        <item>Piwo smakowe</item>
+        <item>Drink</item>
+    </array>
+
+    <array name="bug_priority">
+        <item>major</item>
+        <item>minor</item>
+        <item>trivial</item>
+        <item>critical</item>
+        <item>blocker</item>
+    </array>
+    <array name="bug_kind">
+        <item>bug</item>
+        <item>task</item>
+        <item>proposal</item>
+        <item>enhancement</item>
+    </array>
+</resources>

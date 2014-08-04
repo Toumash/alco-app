@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        >
+    <item
+            android:title="@string/alcoholinfo_refresh_comments"
+            android:id="@+id/menu_more_ratings_refresh"
+            android:showAsAction="never"
+            android:orderInCategory="2"
+            android:icon="@drawable/ic_action_refresh"/>
+</menu>

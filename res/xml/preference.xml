@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="@string/prefs_app">
+        <CheckBoxPreference
+                android:title="@string/prefs_comments_auto_load"
+                android:summary="@string/prefs_comments_auto_load_sum"
+                android:key="cm_auto_refresh"
+                android:defaultValue="true"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/account">
+
+        <Preference
+                android:title="@string/profile_title"
+                android:key="profile"/>
+        <Preference
+                android:title="@string/log_out"
+                android:key="logout"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/release">
+        <Preference
+                android:title="@string/update"
+                android:key="Update"
+                android:summary="@string/forceUpdate"/>
+
+        <Preference
+                android:title="@string/author"
+                android:summary="@string/about_us"
+                android:key="AboutUs"/>
+
+        <Preference
+                android:title="@string/pref_report_issue"
+                android:summary="@string/pref_report_issue_summary"
+                android:key="reportIssue"/>
+
+        <Preference
+                android:title="@string/pref_changelog"
+                android:key="ChangeLog"
+                android:summary="@string/pref_changelog_summary"/>
+
+        <CheckBoxPreference
+                android:defaultValue="true"
+                android:title="@string/prefs_auto_update"
+                android:key="autoUpdate"
+                android:summary="@string/prefs_auto_update_desc"/>
+
+        <Preference
+                android:title="@string/version"
+                android:summary="@string/AppVersion"
+                android:key="Version"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
