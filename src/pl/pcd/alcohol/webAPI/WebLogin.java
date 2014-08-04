@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.webAPIHelper;
+package pl.pcd.alcohol.webapi;
 
 import android.app.ProgressDialog;
 import android.content.Context;

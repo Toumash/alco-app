@@ -7,29 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.Const;
-import pl.pcd.alcohol.Utils;
-import pl.pcd.alcohol.R;
-import pl.pcd.alcohol.TitleActivity;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import pl.pcd.alcohol.*;
 
 public class PrefsActivity extends SherlockPreferenceActivity {
 
@@ -135,7 +123,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (Utils.isConnected(context)) {
-                    new Updater(context).execute();
+                    new UpdatingActivity.Updater(context).execute();
 
                 } else {
                     Toast.makeText(context, getString(R.string.no_internet), Toast.LENGTH_LONG).show();
@@ -215,105 +203,5 @@ public class PrefsActivity extends SherlockPreferenceActivity {
         pref_logout.setEnabled(isUserLogged);
     }
 
-    class Updater extends AsyncTask<Void, Integer, Void> {
-        SharedPreferences sharedPreferences;
-        ProgressDialog progressDialog;
-        Context context;
-        File outputFile;
-
-        public Updater(@NotNull Context context) {
-            this.context = context;
-            this.sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
-            this.progressDialog = new ProgressDialog(context);
-            {
-                this.progressDialog.setIndeterminate(false);
-                this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                this.progressDialog.setMessage(getString(R.string.updating));
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            this.progressDialog.show();
-        }
-
-        @Nullable
-        @Override
-        protected Void doInBackground(Void... voids) {
-            updateFromUrl(Const.API.URL_UPDATE);
-            return null;
-        }
-
-        public void updateFromUrl(String apkUrl) {
-
-            try {
-                URL url = new URL(apkUrl);
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();
-                c.setConnectTimeout(3000);
-                c.setReadTimeout(20000);
-                c.setRequestMethod("GET");
-                c.setDoOutput(true);
-                c.connect();
-                int lengthOfFile;
-                try {
-                    lengthOfFile = Integer.parseInt(c.getHeaderField("C-L"));//;c.getContentLength(); - not working. CUSTOM HEADER. SEE server update.php
-                } catch (NumberFormatException e) {
-                    lengthOfFile = -1;
-                }
-
-                outputFile = new File(context.getExternalFilesDir(null), "UPDATE.apk");
-                if (outputFile.exists()) {
-                    outputFile.delete();
-                }
-                FileOutputStream fos = new FileOutputStream(outputFile);
-
-                InputStream is = c.getInputStream();
-                long total = 0;
-                byte[] buffer = new byte[8192];
-                int len1;
-                while ((len1 = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len1);
-                    total += len1;
-                    publishProgress((int) ((total * 100) / lengthOfFile));
-                }
-                fos.flush();
-                is.close();
-                fos.close();
-                publishProgress(100);
-
-
-                //sharedPreferences.edit().putBoolean(Const.Prefs.FIRST_RUN, true).commit();
-            } catch (IOException e) {
-                Log.d("Updater", e.toString());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... x) {
-            super.onProgressUpdate();
-            this.progressDialog.setProgress(x[0]);
-
-
-        }
-
-        @Override
-        protected void onPostExecute(Void x) {
-            super.onPostExecute(x);
-            this.progressDialog.dismiss();
-            this.progressDialog.cancel();
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
-            context.startActivity(intent);
-            finish();
-/*            setResult(900);    //900 is the self destruct code.
-            finish();*/
-        }
-    }
 }
 

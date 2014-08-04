@@ -32,104 +32,43 @@ public class UpdatingActivity extends TitleActivity {
         super.onCreate(x);
         if (Utils.isConnected(getApplicationContext())) {
             SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
-            if (Const.DEBUG)
+            if (Cfg.DEBUG)
                 Log.d("Updater", sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true) ? "AutoUpdater < ON >" : "AutoUpdater < OFF >");
             if (sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true)) {
                 Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
-                long date = Long.valueOf(year + "" + "" + month + "" + day);
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                long date = Long.valueOf(year + "" + "" + month + "" + day + "" + hour);
                 if (sharedPreferences.getLong(Const.Prefs.Main.LAST_UPDATE_CHECK, 000) < date) {
-                    if (Const.DEBUG) Log.i("Updater", "Checking for updates");
+                    if (Cfg.DEBUG) Log.i("Updater", "Checking for updates");
                     new UpdateChecker(UpdatingActivity.this, date).execute();
 
                 } else {
-                    if (Const.DEBUG) Log.i("Updater", "Update is not necessary");
+                    if (Cfg.DEBUG) Log.i("Updater", "Update is not necessary");
                 }
             }
         } else {
-            if (Const.DEBUG) Log.d("Updater", "Not connected");
+            if (Cfg.DEBUG) Log.d("Updater", "Not connected");
         }
     }
 
-
-    public class UpdateChecker extends AsyncTask<Void, Integer, Void> {
-        public String description = "";
-        Context context;
-        SharedPreferences sharedPreferences;
-        long date;
-
-
-        public UpdateChecker(Context context, long date) {
-            super();
-            this.context = context;
-            sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
-            this.date = date;
-        }
-
-        @Nullable
-        @Override
-        protected Void doInBackground(Void... integers) {
-            if (isUpdateAvailable()) {
-                final AlertDialog.Builder alert = new AlertDialog.Builder(this.context);
-                alert.setTitle(R.string.update_title);
-                alert.setMessage(getString(R.string.update_changelog) + ":\n" + description);
-                alert.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (Const.DEBUG) Log.d("Updater", "firing update");
-                        new Updater(context).execute();
-                    }
-                });
-                alert.setNegativeButton(R.string.no_thanks, null);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        alert.show();
-                    }
-                });
-            } else {
-                Log.d("Updater", "no update available");
-            }
-            return null;
-        }
-
-        protected boolean isUpdateAvailable() {
-            PackageInfo pInfo = null;
-            try {
-                //noinspection ConstantConditions
-                pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.e("Updater", e.toString());
-            }
-            int currentVersion = (pInfo != null) ? pInfo.versionCode : 0;
-            try {
-                JSONObject json = new JSONObject(JSONTransmitter.downloadWebsite(Const.API.URL_VERSION));
-                this.description = json.getString("info");
-                sharedPreferences.edit().putLong(Const.Prefs.Main.LAST_UPDATE_CHECK, this.date).commit();
-                return json.getInt("version") > currentVersion;
-            } catch (JSONException e) {
-                Log.e("Updater", e.toString());
-            }
-            return false;
-        }
-    }
-
-    public class Updater extends AsyncTask<Void, Integer, Void> {
+    public static class Updater extends AsyncTask<Void, Integer, Void> {
         SharedPreferences sharedPreferences;
         ProgressDialog progressDialog;
         Context context;
+        Runnable error = null;
+        File outputFile;
 
         public Updater(@NotNull Context context) {
             this.context = context;
-            this.sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+            this.sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
             this.progressDialog = new ProgressDialog(context);
             {
                 this.progressDialog.setIndeterminate(false);
                 this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                this.progressDialog.setMessage(getString(R.string.updating));
+                this.progressDialog.setMessage(context.getString(R.string.updating));
             }
         }
 
@@ -148,7 +87,6 @@ public class UpdatingActivity extends TitleActivity {
         public void updateFromUrl(String apkUrl) {
 
             try {
-                //TODO:ProgressBarNeeded
                 URL url = new URL(apkUrl);
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();
                 c.setConnectTimeout(3000);
@@ -163,9 +101,8 @@ public class UpdatingActivity extends TitleActivity {
                     lengthOfFile = -1;
                 }
 
-                File outputFile = new File(context.getExternalFilesDir(null), "UPDATE.apk");
+                outputFile = new File(context.getExternalFilesDir(null), "UPDATE.apk");
                 if (outputFile.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
                     outputFile.delete();
                 }
                 FileOutputStream fos = new FileOutputStream(outputFile);
@@ -182,19 +119,19 @@ public class UpdatingActivity extends TitleActivity {
                 fos.flush();
                 is.close();
                 fos.close();
-                publishProgress(100);
+                publishProgress(100);/*
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
-                context.startActivity(intent);
+                context.startActivity(intent);*/
                 sharedPreferences.edit().putBoolean(Const.Prefs.FIRST_RUN, true).commit();
             } catch (IOException e) {
                 Log.d("Updater", e.toString());
-                runOnUiThread(new Runnable() {
+                error = new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
                     }
-                });
+                };
             }
         }
 
@@ -208,8 +145,76 @@ public class UpdatingActivity extends TitleActivity {
 
         @Override
         protected void onPostExecute(Void x) {
+            if (error != null) error.run();
             this.progressDialog.dismiss();
             this.progressDialog.cancel();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
+            context.startActivity(intent);
+        }
+    }
+
+    public static class UpdateChecker extends AsyncTask<Void, Integer, Void> {
+        public String description = "";
+        Context ctx;
+        SharedPreferences sharedPreferences;
+        long date;
+        AlertDialog.Builder alert = null;
+
+        public UpdateChecker(Context context, long date) {
+            super();
+            this.ctx = context;
+            sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+            this.date = date;
+        }
+
+        @Nullable
+        @Override
+        protected Void doInBackground(Void... integers) {
+            if (isUpdateAvailable()) {
+                alert = new AlertDialog.Builder(this.ctx);
+                alert.setTitle(R.string.update_title);
+                alert.setMessage(ctx.getString(R.string.update_changelog) + ":\n" + description);
+                alert.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (Cfg.DEBUG) Log.d("Updater", "firing update");
+                        new Updater(ctx).execute();
+                    }
+                });
+                alert.setNegativeButton(R.string.no_thanks, null);
+
+            } else {
+                Log.d("Updater", "no update available");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void xd) {
+            super.onPostExecute(xd);
+            if (alert != null)
+                alert.show();
+        }
+
+        protected boolean isUpdateAvailable() {
+            PackageInfo pInfo = null;
+            try {
+                //noinspection ConstantConditions
+                pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e("Updater", e.toString());
+            }
+            int currentVersion = (pInfo != null) ? pInfo.versionCode : 0;
+            try {
+                JSONObject json = new JSONObject(JSONTransmitter.downloadWebsite(Const.API.URL_VERSION));
+                this.description = json.getString("info");
+                sharedPreferences.edit().putLong(Const.Prefs.Main.LAST_UPDATE_CHECK, this.date).commit();
+                return json.getInt("version") > currentVersion;
+            } catch (JSONException e) {
+                Log.e("Updater", e.toString());
+            }
+            return false;
         }
     }
 }

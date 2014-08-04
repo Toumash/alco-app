@@ -58,7 +58,7 @@ public class ReportBugActivity extends TitleActivity {
                         request.put("kind", kind);
                         request.put("priority", priority);
                     } catch (JSONException e) {
-                        if (Const.DEBUG) Log.e(TAG, e.toString());
+                        if (Cfg.DEBUG) Log.e(TAG, e.toString());
                     }
                     new ReportUploader().execute(request.toString());
                 } else {

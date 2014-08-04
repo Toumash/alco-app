@@ -7,11 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import org.jetbrains.annotations.NotNull;
-import pl.pcd.alcohol.Const;
+import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.Const.EditIntentExtras;
-import pl.pcd.alcohol.DBUser;
-import pl.pcd.alcohol.R;
-import pl.pcd.alcohol.TitleActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +212,7 @@ public class EditorActivity extends TitleActivity {
                         Toast.makeText(context, R.string.alcohol_added, Toast.LENGTH_SHORT).show();
 
                         Log.d(TAG, "Alcohol added to database");
-                        if (Const.DEBUG) Log.d(TAG, et_name.getText().toString() + " "
+                        if (Cfg.DEBUG) Log.d(TAG, et_name.getText().toString() + " "
                                 + Float.valueOf(et_price.getText().toString()) + "zł "
                                 + Integer.valueOf(et_volume.getText().toString()) + "ml "
                                 + Float.valueOf(et_percent.getText().toString()) + "%");

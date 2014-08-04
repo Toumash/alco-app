@@ -7,11 +7,8 @@ of best alcohols fitting your mind and pocket.
 
 ### How do I get set up? ###
 
-* Just Email the administration of this goup
-* clone repo
-* help us! :D
-
-### Who do I talk to? ###
-
-* Toumash
-* Zsuatem
+* email administrator
+* fork repo
+* install project as in _build folder
+* write
+* create pull request

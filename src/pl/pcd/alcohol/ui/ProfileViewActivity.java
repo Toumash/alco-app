@@ -190,7 +190,7 @@ public class ProfileViewActivity extends TitleActivity {
                         editor.putString(Const.Prefs.WEB_API.EMAIL, profile.getString("email"));
                         editor.putInt(Const.Prefs.WEB_API.RATINGS_COUNT, profile.getInt("rat_count"));
                         editor.commit();
-                        if (Const.DEBUG) Log.d("PROFILE", profile.toString());
+                        if (Cfg.DEBUG) Log.d("PROFILE", profile.toString());
                         updateData();
                     } else {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();

@@ -115,7 +115,7 @@ public class LoginActivity extends TitleActivity {
         @Nullable
         @Override
         protected String doInBackground(String... strings) {
-            if (Const.DEBUG) Log.i(TAG, "sent:" + strings[0]);
+            if (Cfg.DEBUG) Log.i(TAG, "sent:" + strings[0]);
             return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON);
         }
 
@@ -165,12 +165,12 @@ public class LoginActivity extends TitleActivity {
                         }
                     } catch (JSONException e) {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
-                        if (Const.DEBUG) Log.e(TAG, e.toString());
+                        if (Cfg.DEBUG) Log.e(TAG, e.toString());
                     }
                 } else {
                     Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
                 }
-                if (Const.DEBUG) Log.i(TAG, "Whole response:" + r);
+                if (Cfg.DEBUG) Log.i(TAG, "Whole response:" + r);
             } else {
                 Toast.makeText(context, R.string.network_error, Toast.LENGTH_LONG).show();
             }

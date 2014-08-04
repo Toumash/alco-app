@@ -22,12 +22,12 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.webAPIHelper.RatingsDownloader;
-import pl.pcd.alcohol.webAPIHelper.Reporter;
-import pl.pcd.alcohol.webAPIHelper.WebLogin;
+import pl.pcd.alcohol.webapi.RatingsDownloader;
+import pl.pcd.alcohol.webapi.Reporter;
+import pl.pcd.alcohol.webapi.WebLogin;
 
 public class AlcoholInfoActivity extends TitleActivity {
-    private static final int NUM_OPINIONS = 3;
+    private static final int RATINGS_COUNT = 3;
     @NotNull
     Context context = this;
     TextView et_name, et_price, et_percent, et_volume, et_type, et_subtype;
@@ -108,7 +108,7 @@ public class AlcoholInfoActivity extends TitleActivity {
         if (xtr != null) {
             fillFieldsFromDB(xtr.getLong("id"));
             if (sharedPreferences.getBoolean(Const.Prefs.Main.COMMENTS_AUTO_REFRESH, true)) {
-                handleFetchingComments();
+                handleFetchingRatings();
             } else {
                 if (findViewById(111) != null)
                     linear_for_ratings.removeView(findViewById(111));
@@ -123,9 +123,9 @@ public class AlcoholInfoActivity extends TitleActivity {
         }
     }
 
-    private void handleFetchingComments() {
+    private void handleFetchingRatings() {
         if (Utils.isConnected(context)) {
-            RatingsDownloader downloader = new RatingsDownloader(alcoholId, NUM_OPINIONS) {
+            RatingsDownloader downloader = new RatingsDownloader(alcoholId, RATINGS_COUNT) {
                 @Nullable
                 ProgressBar progressBar;
 
@@ -163,7 +163,7 @@ public class AlcoholInfoActivity extends TitleActivity {
                             linear_for_ratings.addView(view);
                             i++;
                         }
-                        if (ratingList.size() < NUM_OPINIONS) {
+                        if (ratingList.size() <= RATINGS_COUNT) {
                             bt_more.setEnabled(false);
                         } else {
                             bt_more.setEnabled(true);
@@ -208,8 +208,8 @@ public class AlcoholInfoActivity extends TitleActivity {
         /*  Do not remove this if statement, I donnt know why, but without it theres exception thrown
             That is strange since db.getRow(long) already moves Cursor c to first position */
         if (c.moveToFirst()) {
-            if (Const.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
-            if (Const.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
+            if (Cfg.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
+            if (Cfg.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
             alcoholId = c.getLong(c.getColumnIndexOrThrow(DBMain.KEY_ID_ALC));
             et_name.setText(c.getString(c.getColumnIndexOrThrow(DBMain.KEY_NAME)));
             et_price.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(DBMain.KEY_PRICE)) + "zł"));
@@ -256,7 +256,7 @@ public class AlcoholInfoActivity extends TitleActivity {
                 handleReporting();
                 break;
             case R.id.menu_alcoholinfo_refresh:
-                handleFetchingComments();
+                handleFetchingRatings();
                 break;
             case R.id.menu_alcoholinfo_settings:
                 Intent intent = new Intent(context, PrefsActivity.class);
@@ -304,7 +304,7 @@ public class AlcoholInfoActivity extends TitleActivity {
 /*                            JSONArray flags = new JSONArray();
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
-                                if (Const.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
+                                if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
                                 new Reporter(context).execute(json.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -379,7 +379,7 @@ public class AlcoholInfoActivity extends TitleActivity {
                                     super.onPostExecute(s);
                                     progressDialog.cancel();
                                     if (s != null) {
-                                        if (Const.DEBUG) Log.d(TAG, s);
+                                        if (Cfg.DEBUG) Log.d(TAG, s);
                                         String result = Utils.substringBetween(s, "<json>", "</json>");
                                         JSONObject jsonObject;
                                         try {

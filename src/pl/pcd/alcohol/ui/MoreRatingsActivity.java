@@ -12,7 +12,7 @@ import com.actionbarsherlock.view.MenuItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.webAPIHelper.RatingsDownloader;
+import pl.pcd.alcohol.webapi.RatingsDownloader;
 
 import java.util.ArrayList;
 

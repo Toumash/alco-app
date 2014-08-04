@@ -25,8 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.webAPIHelper.Reporter;
-import pl.pcd.alcohol.webAPIHelper.WebLogin;
+import pl.pcd.alcohol.webapi.Reporter;
+import pl.pcd.alcohol.webapi.WebLogin;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -203,7 +203,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
 /*                            JSONArray flags = new JSONArray();
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
-                                        if (Const.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
+                                        if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
                                         new Reporter(context).execute(json.toString());
                                     } catch (JSONException e) {
                                         e.printStackTrace();

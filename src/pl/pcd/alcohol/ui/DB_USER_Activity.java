@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.Const.EditIntentExtras;
-import pl.pcd.alcohol.webAPIHelper.WebLogin;
+import pl.pcd.alcohol.webapi.WebLogin;
 
 
 public class DB_USER_Activity extends TitleActivity {

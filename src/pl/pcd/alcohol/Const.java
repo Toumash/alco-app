@@ -1,9 +1,6 @@
 package pl.pcd.alcohol;
 
 public class Const {
-    public static final boolean DEBUG = false;
-    public static final boolean localTestingSwitch = false;
-    public static final String URL_BASE = localTestingSwitch ? "http://192.168.0.111" : "http://dev.code-sharks.pl";
     public static final int REQUEST_CODE_ADD = 1;
     public static final int REQUEST_CODE_UPDATE = 2;
     public static final int REQUEST_LOGIN = 3;
@@ -30,6 +27,11 @@ public class Const {
 
     public static final class API {
         public static final String URL_ABOUT = "http://code-sharks.pl" + "/index.php/o-nas"; //About is on the main domain, not on the sub - "dev"
+        public static final String URL_VERSION = Cfg.URL_BASE + "/version.json";
+        public static final String URL_JSON = Cfg.URL_BASE + "/api?json=";
+        public static final String URL_UPDATE = Cfg.URL_BASE + "/update?file=Alcohol.apk";//"/uploads/Alcohol.apk";
+        public static final String URL_MAIN = Cfg.URL_BASE + "/api?db=main";
+        public static final String URL_USER = Cfg.URL_BASE + "/api?db=user";
 
         public static final class LoginResult {
             public static final String OK = "ok";
@@ -48,13 +50,6 @@ public class Const {
             public static final String FETCH_RATINGS = "fetchRatings";
             public static final String RATE = "rate";
         }
-
-        public static final String URL_VERSION = URL_BASE + "/version.json";
-        public static final String URL_JSON = URL_BASE + "/api?json=";
-
-        public static final String URL_UPDATE = URL_BASE + "/update?file=Alcohol.apk";//"/uploads/Alcohol.apk";
-        public static final String URL_MAIN = URL_BASE + "/api?db=main";
-        public static final String URL_USER = URL_BASE + "/api?db=user";
 
 
     }
