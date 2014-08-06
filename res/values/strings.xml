@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Alcohol Ranker</string>
-    <string name="AppVersion">0.0.5.140804</string>
+    <string name="AppVersion">0.0.6.140806</string>
     <string name="version">Version</string>
     <string name="forceUpdate">Force an update</string>
     <string name="release">Release</string>

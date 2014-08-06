@@ -17,9 +17,10 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 
 
-public class LoginActivity extends TitleActivity {
+public class LoginActivity extends ThemeActivity {
 
     @NotNull
     static public String TAG = "LoginActivity";

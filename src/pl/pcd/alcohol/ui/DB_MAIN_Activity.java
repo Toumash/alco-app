@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.UpdatingActivity;
 import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.WebLogin;
 

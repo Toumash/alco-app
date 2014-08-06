@@ -18,6 +18,8 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.ui.base.UpdatingActivity;
 
 public class PrefsActivity extends SherlockPreferenceActivity {
 
@@ -42,7 +44,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
             requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 */
 
-        TitleActivity.setThemeToHackerStyle(context);
+        ThemeActivity.setThemeToHackerStyle(context);
 
         super.onCreate(savedInstanceState);
 

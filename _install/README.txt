@@ -1,0 +1,1 @@
+In order to connect to online service you need to obtain your own, personal api key - Just simply contact the administrator of the repo.

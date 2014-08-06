@@ -1,4 +1,4 @@
-package pl.pcd.alcohol;
+package pl.pcd.alcohol.ui.base;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pl.pcd.alcohol.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
-public class UpdatingActivity extends TitleActivity {
+public class UpdatingActivity extends ThemeActivity {
     @Override
     protected void onCreate(Bundle x) {
         super.onCreate(x);

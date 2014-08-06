@@ -1,11 +1,13 @@
-package pl.pcd.alcohol;
+package pl.pcd.alcohol.ui.base;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.actionbarsherlock.app.SherlockActivity;
 import org.jetbrains.annotations.NotNull;
+import pl.pcd.alcohol.Const;
+import pl.pcd.alcohol.R;
 
-public class TitleActivity extends SherlockActivity {
+public class ThemeActivity extends SherlockActivity {
 
     /**
      * Sets the activity style to black one when there's a true bool sharedPreference called hacker_style in Prefs.Main.FILE

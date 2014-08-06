@@ -13,6 +13,9 @@ import org.apache.http.params.HttpParams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pl.pcd.alcohol.webapi.Config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +32,9 @@ public class JSONTransmitter {
         InputStream inputStream = null;
         String result = "";
         try {
+            JSONObject obj = new JSONObject(JSON);
+            obj.put("api_token", Config.TOKEN);
+            JSON = obj.toString();
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, 1000 * 7);
             HttpConnectionParams.setSoTimeout(httpParams, 1000 * 10);
@@ -67,6 +73,8 @@ public class JSONTransmitter {
         } catch (IOException e) {
             Log.d("InputStream", e.toString());
             return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return result;

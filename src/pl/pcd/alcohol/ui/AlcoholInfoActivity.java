@@ -22,12 +22,15 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.RatingsDownloader;
 import pl.pcd.alcohol.webapi.WebLogin;
 
-public class AlcoholInfoActivity extends TitleActivity {
+@SuppressWarnings("ResourceType")
+public class AlcoholInfoActivity extends ThemeActivity {
     private static final int RATINGS_COUNT = 3;
+    public static int INFO_VIEW_ID = 111;
     @NotNull
     Context context = this;
     TextView et_name, et_price, et_percent, et_volume, et_type, et_subtype;
@@ -110,12 +113,12 @@ public class AlcoholInfoActivity extends TitleActivity {
             if (sharedPreferences.getBoolean(Const.Prefs.Main.COMMENTS_AUTO_REFRESH, true)) {
                 handleFetchingRatings();
             } else {
-                if (findViewById(111) != null)
-                    linear_for_ratings.removeView(findViewById(111));
+                if (findViewById(INFO_VIEW_ID) != null)
+                    linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
                 TextView tv = new TextView(context);
                 tv.setText(R.string.alcoholinfo_ratings_autoload_off);
                 tv.setGravity(Gravity.CENTER_HORIZONTAL);
-                tv.setId(111);
+                tv.setId(INFO_VIEW_ID);
                 linear_for_ratings.addView(tv);
             }
         } else {
@@ -134,9 +137,9 @@ public class AlcoholInfoActivity extends TitleActivity {
                     super.onPreExecute();
                     this.progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyle);
                     this.progressBar.setIndeterminate(true);
-                    if (findViewById(111) != null)
-                        linear_for_ratings.removeView(findViewById(111));
-                    this.progressBar.setId(111);
+                    if (findViewById(INFO_VIEW_ID) != null)
+                        linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                    this.progressBar.setId(INFO_VIEW_ID);
                     linear_for_ratings.addView(this.progressBar, 0);
                 }
 
@@ -173,18 +176,18 @@ public class AlcoholInfoActivity extends TitleActivity {
                         TextView error = new TextView(context);
                         error.setText(R.string.network_error);
                         error.setGravity(Gravity.CENTER_HORIZONTAL);
-                        error.setId(111);
-                        if (findViewById(111) != null)
-                            linear_for_ratings.removeView(findViewById(111));
+                        error.setId(INFO_VIEW_ID);
+                        if (findViewById(INFO_VIEW_ID) != null)
+                            linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
                         linear_for_ratings.addView(error, 0);
                         bt_more.setEnabled(true);
                     } else if (this.result.equals("no_comments")) {
                         TextView error = new TextView(context);
                         error.setText(R.string.alcoholinfo_no_ratings);
                         error.setGravity(Gravity.CENTER_HORIZONTAL);
-                        error.setId(111);
-                        if (findViewById(111) != null)
-                            linear_for_ratings.removeView(findViewById(111));
+                        error.setId(INFO_VIEW_ID);
+                        if (findViewById(INFO_VIEW_ID) != null)
+                            linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
                         linear_for_ratings.addView(error, 0);
                         bt_more.setEnabled(false);
                     }
@@ -192,12 +195,12 @@ public class AlcoholInfoActivity extends TitleActivity {
             };
             downloader.execute();
         } else {
-            if (findViewById(111) != null)
-                linear_for_ratings.removeView(findViewById(111));
+            if (findViewById(INFO_VIEW_ID) != null)
+                linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
             TextView tv = new TextView(context);
             tv.setText(R.string.no_internet);
             tv.setGravity(Gravity.CENTER_HORIZONTAL);
-            tv.setId(111);
+            tv.setId(INFO_VIEW_ID);
             linear_for_ratings.addView(tv, 0);
         }
     }

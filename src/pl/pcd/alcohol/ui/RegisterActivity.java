@@ -18,8 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 
-public class RegisterActivity extends TitleActivity {
+public class RegisterActivity extends ThemeActivity {
     @NotNull
     static public String TAG = "RegisterActivity";
     boolean isLogged = false;

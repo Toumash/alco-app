@@ -11,13 +11,13 @@ import pl.pcd.alcohol.Cfg;
 import pl.pcd.alcohol.Const.EditIntentExtras;
 import pl.pcd.alcohol.DBUser;
 import pl.pcd.alcohol.R;
-import pl.pcd.alcohol.TitleActivity;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class EditorActivity extends TitleActivity {
+public class EditorActivity extends ThemeActivity {
 
     public static final String TAG = "EditorActivity";
     public int EDIT_MODE = 1;

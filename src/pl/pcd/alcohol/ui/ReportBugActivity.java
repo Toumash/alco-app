@@ -17,8 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 
-public class ReportBugActivity extends TitleActivity {
+public class ReportBugActivity extends ThemeActivity {
     Button bt_send;
     EditText et_title, et_description, et_user;
     Spinner sr_type, sr_priority;

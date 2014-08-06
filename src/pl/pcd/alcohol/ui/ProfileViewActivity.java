@@ -18,8 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.ui.base.ThemeActivity;
 
-public class ProfileViewActivity extends TitleActivity {
+public class ProfileViewActivity extends ThemeActivity {
 
     private static final int REQUEST_LOGIN = 2;
     @NotNull
