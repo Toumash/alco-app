@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -25,9 +25,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.UpdatingActivity;
+import pl.pcd.alcohol.activity.base.UpdatingActivity;
+import pl.pcd.alcohol.database.MainDB;
 import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.WebLogin;
+import pl.pcd.alcohol.webapi.contract.Main_Alcohol;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -38,26 +40,17 @@ public class DB_MAIN_Activity extends UpdatingActivity {
     public static final String TAG = "DB_MainActivity";
     @NotNull
     protected Context context = this;
-    DBMain db;
+    MainDB db;
     Cursor cursor;
-    ListView myList;
+    ListView listView;
     EditText et_search;
     SharedPreferences sharedPreferences;
     @Nullable
     CursorAdapter myCursorAdapter;
-    TextView warning;
     LinearLayout linear;
     ProgressDialog pd_DBdl;
     private GestureDetector gestureDetector;
 
-    private void createNoRecordsWarning(@NotNull Context _context) {
-        warning = new TextView(_context);
-        warning.setText(R.string.no_records);
-        warning.setGravity(Gravity.CENTER);
-        warning.setTextColor(getResources().getColor(R.color.warning));
-        //noinspection ResourceType
-        warning.setId(404);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
@@ -90,7 +83,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
     }
 
     protected void openDB() {
-        db = new DBMain(this);
+        db = new MainDB(this);
         db.open();
     }
 
@@ -112,8 +105,8 @@ public class DB_MAIN_Activity extends UpdatingActivity {
 
         setContentViewWithTitle(context, R.layout.activ_main_list, R.string.alcohol_list);
         sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
-        createNoRecordsWarning(context);
-        myList = (ListView) findViewById(R.id.main_db_list_view);
+        // listView = (ListView) findViewById(R.id.main_db_list_view);
+        listView = this.getListView();
         linear = (LinearLayout) findViewById(R.id.linearRoot_main_db);
         et_search = (EditText) findViewById(R.id.main_search);
 
@@ -133,9 +126,11 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                 }
             }
         });
+
         openDB();
-        myList.setOnItemClickListener(new onAlcoholClickListener());
-        registerForContextMenu(myList);
+
+        listView.setOnItemClickListener(new onAlcoholClickListener());
+        registerForContextMenu(listView);
 
         //showChangeLogOnFirstRun(sharedPreferences);
 
@@ -147,13 +142,13 @@ public class DB_MAIN_Activity extends UpdatingActivity {
             }
         };
         linear.setOnTouchListener(gestureCallback);
-        myList.setOnTouchListener(gestureCallback);
+        listView.setOnTouchListener(gestureCallback);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (myList.getAdapter() == null)
+        if (listView.getAdapter() == null)
             populateListFromDBAsync();
     }
 
@@ -163,7 +158,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
         int menuItemIndex = alcohol_item.getItemId();
         cursor = db.getRow(info.id);
 
-        final int alcoholID = cursor.getInt(DBMain.COL_ID_ALC);
+        final int alcoholID = cursor.getInt(MainDB.COL_ID_ALC);
         switch (menuItemIndex) {
             case Const.ContextMenu.MainDB.KEY_FLAG:
 
@@ -241,19 +236,18 @@ public class DB_MAIN_Activity extends UpdatingActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //myList.setAdapter(null);
+        //listView.setAdapter(null);
         //myCursorAdapter = null;
-        if (myList.getChildCount() == 0) Log.d(TAG, "Clearing List...<OK>");
+        if (listView.getChildCount() == 0) Log.d(TAG, "Clearing List...<OK>");
         else Log.d(TAG, "Clearing List...<PARTLY OK> Ram not freed until app destroy");
     }
 
     @Override
     public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId() == R.id.main_db_list_view) {
+        if (v.getId() == listView.getId()) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            // title for context menu
-            menu.setHeaderTitle(db.getRow(info.id).getString(DBMain.COL_NAME));
+            menu.setHeaderTitle(db.getRow(info.id).getString(MainDB.COL_NAME));
             String[] menuItems = getResources().getStringArray(R.array.menu_main_db);
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
@@ -266,7 +260,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
             @Override
             public void run() {
                 Log.d(TAG, "Populating list...");
-                cursor = db.getAllRows(new String[]{DBMain.KEY_ROWID, DBMain.KEY_ID_ALC, DBMain.KEY_NAME, DBMain.KEY_PRICE, DBMain.KEY_VOLUME, DBMain.KEY_PERCENT, DBMain.KEY_TYPE, DBMain.KEY_SUBTYPE}, DBMain.KEY_NAME + " ASC");
+                cursor = db.getAllRows(new String[]{MainDB.KEY_ROWID, MainDB.KEY_ID_ALC, MainDB.KEY_NAME, MainDB.KEY_PRICE, MainDB.KEY_VOLUME, MainDB.KEY_PERCENT, MainDB.KEY_TYPE, MainDB.KEY_SUBTYPE}, MainDB.KEY_NAME + " ASC");
 
                 //Setup mapping from cursor to view fields
 /*                String[] fromFieldNames = new String[]
@@ -316,7 +310,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        myList.setAdapter(myCursorAdapter);
+                        listView.setAdapter(myCursorAdapter);
                         myCursorAdapter.notifyDataSetChanged();
                         /* FILTERING function
                         ======================*/
@@ -328,13 +322,8 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                             }
                         });
 
-                        if (myList.getCount() == 0) {
-                            //noinspection ResourceType
-                            if (linear.findViewById(404) == null)
-                                linear.addView(warning, 1);
+                        if (listView.getCount() == 0) {
                             Log.d(TAG, "Populating.. <NO RECORDS>");
-                        } else if (linear.getChildCount() > 1) {
-                            linear.removeView(warning);
                         }
                         Log.d(TAG, "Populating.. <SUCCESS>");
                     }
@@ -350,7 +339,7 @@ public class DB_MAIN_Activity extends UpdatingActivity {
             Cursor c = db.getRow(id);
 
             Bundle b = new Bundle();
-            b.putLong("id", c.getLong(c.getColumnIndexOrThrow(DBMain.KEY_ROWID)));
+            b.putLong("id", c.getLong(c.getColumnIndexOrThrow(MainDB.KEY_ROWID)));
 
             Intent intent = new Intent(context, AlcoholInfoActivity.class);
             intent.putExtras(b);
@@ -423,32 +412,20 @@ public class DB_MAIN_Activity extends UpdatingActivity {
                     JSONObject JO;
                     for (int i = 0; i < JA.length(); i++) {
                         JO = JA.getJSONObject(i);
-                        DBMain.M_Alcohol alc = new DBMain.M_Alcohol(JO.getLong("ID"), JO.getString(DBMain.KEY_NAME), (float) JO.getDouble(DBMain.KEY_PRICE), JO.getInt(DBMain.KEY_TYPE), JO.getInt(DBMain.KEY_SUBTYPE), JO.getInt(DBMain.KEY_VOLUME), (float) JO.getDouble(DBMain.KEY_PERCENT), JO.getInt(DBMain.KEY_DEPOSIT));
+                        Main_Alcohol alc = new Main_Alcohol(JO.getLong("ID"), JO.getString(MainDB.KEY_NAME), (float) JO.getDouble(MainDB.KEY_PRICE), JO.getInt(MainDB.KEY_TYPE), JO.getInt(MainDB.KEY_SUBTYPE), JO.getInt(MainDB.KEY_VOLUME), (float) JO.getDouble(MainDB.KEY_PERCENT), JO.getInt(MainDB.KEY_DEPOSIT));
                         db.insertRow(alc);
 
                     }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
-                            if (db.getCount() == 0) {
-                                //noinspection ResourceType
-                                if (linear.findViewById(404) == null) linear.addView(warning);
-
-                            } else //noinspection ResourceType
-                                if (linear.findViewById(404) != null) {
-                                    linear.removeView(warning);
-                                }
-                            // .requery() refreshes the data in listVise,
-                            // so DO NOT DELETE IT
                             //noinspection deprecation
                             cursor.requery();
-                            Log.d(TAG, "REQUERYING");
+                            Log.d(TAG, "Refreshing listView");
 
                             if (myCursorAdapter != null) {
                                 myCursorAdapter.notifyDataSetChanged();
                             }
-
                         }
                     });
                 } catch (JSONException e) {

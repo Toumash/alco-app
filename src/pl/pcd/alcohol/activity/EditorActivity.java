@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.content.Context;
 import android.os.Build;
@@ -9,9 +9,10 @@ import android.widget.*;
 import org.jetbrains.annotations.NotNull;
 import pl.pcd.alcohol.Cfg;
 import pl.pcd.alcohol.Const.EditIntentExtras;
-import pl.pcd.alcohol.DBUser;
 import pl.pcd.alcohol.R;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.database.UserDB;
+import pl.pcd.alcohol.webapi.contract.User_Alcohol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EditorActivity extends ThemeActivity {
 
     public static final String TAG = "EditorActivity";
     public int EDIT_MODE = 1;
-    DBUser db;
+    UserDB db;
     @NotNull
     Context context = this;
     EditText et_name, et_price, et_volume, et_percent;
@@ -62,7 +63,7 @@ public class EditorActivity extends ThemeActivity {
     ;
 
     private void openDB() {
-        db = new DBUser(this);
+        db = new UserDB(this);
         db.open();
     }
 
@@ -111,14 +112,14 @@ public class EditorActivity extends ThemeActivity {
             sr_type.setSelection(xtr.getInt(EditIntentExtras.KEY_TYPE));
             int arrayRId = -1;
             switch ((int) sr_type.getSelectedItemId()) {
-                case DBUser.U_Alcohol.Type.NISKOPROCENTOWY:
+                case User_Alcohol.Type.NISKOPROCENTOWY:
                     arrayRId = R.array.niskoprocentowe;
                     break;
-                case DBUser.U_Alcohol.Type.SREDNIOPROCENTOWY:
+                case User_Alcohol.Type.SREDNIOPROCENTOWY:
                     arrayRId = R.array.srednioprocentowe;
                     break;
 
-                case DBUser.U_Alcohol.Type.WYSOKOPROCENTOWY:
+                case User_Alcohol.Type.WYSOKOPROCENTOWY:
                     arrayRId = R.array.wysokoprocentowe;
                     cb_deposit.setEnabled(false);
                     tv_deposit.setEnabled(false);
@@ -155,14 +156,14 @@ public class EditorActivity extends ThemeActivity {
                     cb_deposit.setEnabled(true);
                     tv_deposit.setEnabled(true);
                     switch (position) {
-                        case DBUser.U_Alcohol.Type.NISKOPROCENTOWY:
+                        case User_Alcohol.Type.NISKOPROCENTOWY:
                             arrayRId = R.array.niskoprocentowe;
                             break;
-                        case DBUser.U_Alcohol.Type.SREDNIOPROCENTOWY:
+                        case User_Alcohol.Type.SREDNIOPROCENTOWY:
                             arrayRId = R.array.srednioprocentowe;
                             break;
 
-                        case DBUser.U_Alcohol.Type.WYSOKOPROCENTOWY:
+                        case User_Alcohol.Type.WYSOKOPROCENTOWY:
                             arrayRId = R.array.wysokoprocentowe;
                             cb_deposit.setEnabled(false);
                             tv_deposit.setEnabled(false);
@@ -204,7 +205,7 @@ public class EditorActivity extends ThemeActivity {
                 int deposit = cb_deposit.isChecked() ? 1 : 0;
 
                 //noinspection ConstantConditions
-                DBUser.U_Alcohol newAlcohol = new DBUser.U_Alcohol(
+                User_Alcohol newAlcohol = new User_Alcohol(
                         et_name.getText().toString().trim(),
                         Float.valueOf(et_price.getText().toString().trim()),
                         Integer.valueOf(et_volume.getText().toString().trim()),

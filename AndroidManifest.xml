@@ -23,7 +23,7 @@
         <!-- MAIN DATABASE -->
 
         <activity
-                android:name=".ui.DB_MAIN_Activity"
+                android:name=".activity.DB_MAIN_Activity"
                 android:label="@string/alcohol_list"
                 android:launchMode="singleTask"
                 android:windowSoftInputMode="stateUnchanged">
@@ -37,7 +37,7 @@
         <!-- USER DATABASE -->
 
         <activity
-                android:name=".ui.DB_USER_Activity"
+                android:name=".activity.DB_USER_Activity"
                 android:label="@string/my_proposals"
                 android:launchMode="standard">
             <!--      android:parentActivityName=".ui.MainListActivity">
@@ -49,9 +49,9 @@
         <!-- EDITOR -->
 
         <activity
-                android:name=".ui.EditorActivity"
+                android:name=".activity.EditorActivity"
                 android:label="@string/editor"
-                android:parentActivityName=".ui.DB_USER_Activity">
+                android:parentActivityName=".activity.DB_USER_Activity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.UserListActivity"/>
@@ -61,7 +61,7 @@
         <!-- PREFERENCES -->
 
         <activity
-                android:name=".ui.PrefsActivity"
+                android:name=".activity.PrefsActivity"
                 android:label="@string/settings"
                 android:theme="@style/PreferenceScreen">
         </activity>
@@ -69,13 +69,13 @@
         <!--    LOGIN    -->
 
         <activity
-                android:name=".ui.LoginActivity"
+                android:name=".activity.LoginActivity"
                 android:label="@string/login_activity">
         </activity>
         <!--    PROFILE VIEWER    -->
 
         <activity
-                android:name=".ui.ProfileViewActivity"
+                android:name=".activity.ProfileViewActivity"
                 android:label="@string/profile_title">
         </activity>
 
@@ -85,28 +85,28 @@
         <!--    REGISTER    -->
 
         <activity
-                android:name=".ui.RegisterActivity"
+                android:name=".activity.RegisterActivity"
                 android:label="@string/register_title">
         </activity>
 
         <!--    BUG REPORT    -->
 
         <activity
-                android:name=".ui.ReportBugActivity"
+                android:name=".activity.ReportBugActivity"
                 android:label="@string/pref_report_issue">
         </activity>
 
         <!--    ALCOHOL INFO    -->
 
         <activity
-                android:name=".ui.AlcoholInfoActivity"
+                android:name=".activity.AlcoholInfoActivity"
                 android:label="@string/info">
         </activity>
 
         <!--    MORE RATINGS    -->
 
         <activity
-                android:name=".ui.MoreRatingsActivity"
+                android:name=".activity.MoreRatingsActivity"
                 android:label="@string/more_ratings_title">
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,10 +22,12 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.database.MainDB;
 import pl.pcd.alcohol.webapi.AlcoholReporter;
 import pl.pcd.alcohol.webapi.RatingsDownloader;
 import pl.pcd.alcohol.webapi.WebLogin;
+import pl.pcd.alcohol.webapi.contract.Rating;
 
 @SuppressWarnings("ResourceType")
 public class AlcoholInfoActivity extends ThemeActivity {
@@ -41,12 +43,12 @@ public class AlcoholInfoActivity extends ThemeActivity {
     @NotNull
     String TAG = "AlcoholInfo";
     long alcoholId;
-    DBMain db;
+    MainDB db;
     Resources mRes;
     SharedPreferences sharedPreferences;
 
     protected void openDB() {
-        db = new DBMain(context);
+        db = new MainDB(context);
         db.open();
     }
 
@@ -213,19 +215,19 @@ public class AlcoholInfoActivity extends ThemeActivity {
         if (c.moveToFirst()) {
             if (Cfg.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
             if (Cfg.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
-            alcoholId = c.getLong(c.getColumnIndexOrThrow(DBMain.KEY_ID_ALC));
-            et_name.setText(c.getString(c.getColumnIndexOrThrow(DBMain.KEY_NAME)));
-            et_price.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(DBMain.KEY_PRICE)) + "zł"));
-            et_percent.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(DBMain.KEY_PERCENT)) + "%"));
-            et_volume.setText(String.valueOf(c.getInt(c.getColumnIndexOrThrow(DBMain.KEY_VOLUME)) + "ml"));
+            alcoholId = c.getLong(c.getColumnIndexOrThrow(MainDB.KEY_ID_ALC));
+            et_name.setText(c.getString(c.getColumnIndexOrThrow(MainDB.KEY_NAME)));
+            et_price.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(MainDB.KEY_PRICE)) + "zł"));
+            et_percent.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(MainDB.KEY_PERCENT)) + "%"));
+            et_volume.setText(String.valueOf(c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_VOLUME)) + "ml"));
 
-            cb_deposit.setChecked(c.getInt(c.getColumnIndexOrThrow(DBMain.KEY_DEPOSIT)) == 1);
+            cb_deposit.setChecked(c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_DEPOSIT)) == 1);
 
-            et_type.setText(mRes.getStringArray(R.array.typy)[c.getInt(c.getColumnIndexOrThrow(DBMain.KEY_TYPE))]);
+            et_type.setText(mRes.getStringArray(R.array.typy)[c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_TYPE))]);
 
             String[] subtypes;
             int arrayID;
-            switch (c.getInt(DBMain.COL_TYPE)) {
+            switch (c.getInt(MainDB.COL_TYPE)) {
                 case 0:
                     arrayID = R.array.niskoprocentowe;
                     break;
@@ -239,7 +241,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
                     arrayID = R.array.niskoprocentowe;
             }
             subtypes = mRes.getStringArray(arrayID);
-            et_subtype.setText(subtypes[c.getInt(c.getColumnIndexOrThrow(DBMain.KEY_SUBTYPE))]);
+            et_subtype.setText(subtypes[c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_SUBTYPE))]);
         }
         c.close();
     }

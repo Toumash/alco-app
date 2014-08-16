@@ -1,4 +1,4 @@
-package pl.pcd.alcohol;
+package pl.pcd.alcohol.webapi.contract;
 
 public class Rating {
     public String author;

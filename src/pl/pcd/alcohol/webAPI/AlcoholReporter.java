@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.DB_MAIN_Activity;
+import pl.pcd.alcohol.activity.DB_MAIN_Activity;
 
 public class AlcoholReporter extends AsyncTask<String, Void, String> {
 

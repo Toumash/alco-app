@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -17,9 +17,11 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
-import pl.pcd.alcohol.ui.base.UpdatingActivity;
+import pl.pcd.alcohol.Const;
+import pl.pcd.alcohol.R;
+import pl.pcd.alcohol.Utils;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.UpdatingActivity;
 
 public class PrefsActivity extends SherlockPreferenceActivity {
 
@@ -178,6 +180,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         accountSharedPreferences.edit().clear().commit();
+                        pref_logout.setEnabled(false);
                     }
                 });
                 builder.setNegativeButton(R.string.nope, null);

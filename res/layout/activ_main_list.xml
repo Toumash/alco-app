@@ -21,11 +21,19 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/main_db_list_view"
+            android:id="@id/android:list"
             android:fastScrollEnabled="true"
             android:smoothScrollbar="true"
             android:fastScrollAlwaysVisible="false"
             android:longClickable="true"
             android:keepScreenOn="true"/>
+
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/no_records"
+            android:textColor="@color/warning"
+            android:gravity="center_horizontal"
+            android:id="@android:id/empty"/>
 
 </LinearLayout>

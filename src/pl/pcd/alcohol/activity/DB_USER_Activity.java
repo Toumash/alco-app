@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,7 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -17,11 +20,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.Const.EditIntentExtras;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.ThemeListActivity;
+import pl.pcd.alcohol.database.UserDB;
 import pl.pcd.alcohol.webapi.WebLogin;
 
 
-public class DB_USER_Activity extends ThemeActivity {
+public class DB_USER_Activity extends ThemeListActivity {
 
     public static final String TAG = "DB_UserActivity";
     @NotNull
@@ -32,7 +36,7 @@ public class DB_USER_Activity extends ThemeActivity {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
             AlertDialog.Builder popup = new AlertDialog.Builder(context);
-            popup.setMessage("WOW wybrałeś  " + db_user.getRow(id).getString(DBUser.COL_NAME) + " Koszt: " + db_user.getRow(id).getFloat(DBUser.COL_PRICE) + "zł WOW takie fajne");
+            popup.setMessage("WOW wybrałeś  " + db_user.getRow(id).getString(UserDB.COL_NAME) + " Koszt: " + db_user.getRow(id).getFloat(UserDB.COL_PRICE) + "zł WOW takie fajne");
             popup.setIcon(R.drawable.doge_easter_egg);
             popup.setTitle(R.string.doge);
             popup.setPositiveButton(android.R.string.ok, null);
@@ -40,17 +44,16 @@ public class DB_USER_Activity extends ThemeActivity {
 
         }
     };
-    DBUser db_user;
+    UserDB db_user;
     Cursor cursor;
-    ListView myList;
+    ListView listView;
     GestureDetector gestureDetector;
     @Nullable
     private AlcoholCursorAdapter myCursorAdapter;
-    private TextView warning;
     private LinearLayout linear;
 
     private void openDB() {
-        db_user = new DBUser(this);
+        db_user = new UserDB(this);
         db_user.open();
     }
 
@@ -63,7 +66,7 @@ public class DB_USER_Activity extends ThemeActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeDB();
-        myList.setAdapter(null);
+        listView.setAdapter(null);
         myCursorAdapter = null;
     }
 
@@ -72,18 +75,18 @@ public class DB_USER_Activity extends ThemeActivity {
         super.onCreate(savedInstanceState);
 
         setContentViewWithTitle(context, R.layout.activ_user_list, R.string.my_proposals);
-
+//setContentView(R.layout.activ_user_list);
 /*      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             android.app.ActionBar actionBar = getActionBar();
             if (actionBar != null)
                 actionBar.setDisplayHomeAsUpEnabled(true);
         }*/
-        createWarning(context);
-        myList = (ListView) findViewById(R.id.user_db_list_view);
+        // listView = (ListView) findViewById(R.id.user_db_list_view);
+        listView = this.getListView();
         linear = (LinearLayout) findViewById(R.id.linearRoot_listActivity);
         openDB();
-        myList.setOnItemClickListener(onItemClickListener);
-        registerForContextMenu(myList);
+        listView.setOnItemClickListener(onItemClickListener);
+        registerForContextMenu(listView);
 
         gestureDetector = new GestureDetector(new SwipeGestureDetector());
         View.OnTouchListener gestureCallback = new View.OnTouchListener() {
@@ -93,7 +96,7 @@ public class DB_USER_Activity extends ThemeActivity {
             }
         };
         linear.setOnTouchListener(gestureCallback);
-        myList.setOnTouchListener(gestureCallback);
+        listView.setOnTouchListener(gestureCallback);
     }
 
     @Override
@@ -105,8 +108,8 @@ public class DB_USER_Activity extends ThemeActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // myList.setAdapter(null);
-        if (myList.getChildCount() == 0) Log.d(TAG, "Clearing List...<OK>");
+        // listView.setAdapter(null);
+        if (listView.getChildCount() == 0) Log.d(TAG, "Clearing List...<OK>");
         else Log.d(TAG, "Clearing List...<ERROR> Ram not freed until app destroy");
     }
 
@@ -186,10 +189,9 @@ public class DB_USER_Activity extends ThemeActivity {
     @Override
     public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId() == R.id.user_db_list_view) {
+        if (v.getId() == listView.getId()) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            // title for context menu
-            menu.setHeaderTitle(db_user.getRow(info.id).getString(DBUser.COL_NAME));
+            menu.setHeaderTitle(db_user.getRow(info.id).getString(UserDB.COL_NAME));
             String[] menuItems = getResources().getStringArray(R.array.menu_user_db);
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(Menu.NONE, i, i, menuItems[i]);
@@ -221,14 +223,14 @@ public class DB_USER_Activity extends ThemeActivity {
                             price = Float.valueOf(priceS.substring(0, index - 1) + "." + priceS.substring(index + 1, index + 2));
                     }
                     /////////////////////////////////*/
-                    alcohol.put(DBUser.KEY_NAME, c.getString(DBUser.COL_NAME));
+                    alcohol.put(UserDB.KEY_NAME, c.getString(UserDB.COL_NAME));
                     /*alcohol.put(DB_USER.KEY_PRICE, price);*/
-                    alcohol.put(DBUser.KEY_PRICE, c.getDouble(DBUser.COL_PRICE));
-                    alcohol.put(DBUser.KEY_TYPE, c.getInt(DBUser.COL_TYPE));
-                    alcohol.put(DBUser.KEY_SUBTYPE, c.getInt(DBUser.COL_SUBTYPE));
-                    alcohol.put(DBUser.KEY_VOLUME, c.getInt(DBUser.COL_VOLUME));
-                    alcohol.put(DBUser.KEY_PERCENT, c.getDouble(DBUser.COL_PERCENT));
-                    alcohol.put(DBUser.KEY_DEPOSIT, c.getInt(DBUser.COL_DEPOSIT));
+                    alcohol.put(UserDB.KEY_PRICE, c.getDouble(UserDB.COL_PRICE));
+                    alcohol.put(UserDB.KEY_TYPE, c.getInt(UserDB.COL_TYPE));
+                    alcohol.put(UserDB.KEY_SUBTYPE, c.getInt(UserDB.COL_SUBTYPE));
+                    alcohol.put(UserDB.KEY_VOLUME, c.getInt(UserDB.COL_VOLUME));
+                    alcohol.put(UserDB.KEY_PERCENT, c.getDouble(UserDB.COL_PERCENT));
+                    alcohol.put(UserDB.KEY_DEPOSIT, c.getInt(UserDB.COL_DEPOSIT));
                     Log.d("alcArray", alcohol.toString());
                     alcArray.put(alcohol);
                 } while (c.moveToNext());
@@ -252,17 +254,17 @@ public class DB_USER_Activity extends ThemeActivity {
         Cursor cur = db_user.getRow(info.id);
         switch (menuItemIndex) {
             case Const.ContextMenu.KEY_EDIT:
-                Log.d(TAG, "selected Editing of the " + cur.getString(DBUser.COL_NAME) + " record");
+                Log.d(TAG, "selected Editing of the " + cur.getString(UserDB.COL_NAME) + " record");
 
                 Bundle extras = new Bundle();
-                extras.putLong(EditIntentExtras.KEY_ID, cur.getLong(DBUser.COL_ROWID));
-                extras.putString(EditIntentExtras.KEY_NAME, cur.getString(DBUser.COL_NAME));
-                extras.putFloat(EditIntentExtras.KEY_PRICE, cur.getFloat(DBUser.COL_PRICE));
-                extras.putInt(EditIntentExtras.KEY_TYPE, cur.getInt(DBUser.COL_TYPE));
-                extras.putInt(EditIntentExtras.KEY_SUBTYPE, cur.getInt(DBUser.COL_SUBTYPE));
-                extras.putInt(EditIntentExtras.KEY_VOLUME, cur.getInt(DBUser.COL_VOLUME));
-                extras.putInt(EditIntentExtras.KEY_PERCENT, cur.getInt(DBUser.COL_PERCENT));
-                extras.putInt(EditIntentExtras.KEY_DEPOSIT, cur.getInt(DBUser.COL_DEPOSIT));
+                extras.putLong(EditIntentExtras.KEY_ID, cur.getLong(UserDB.COL_ROWID));
+                extras.putString(EditIntentExtras.KEY_NAME, cur.getString(UserDB.COL_NAME));
+                extras.putFloat(EditIntentExtras.KEY_PRICE, cur.getFloat(UserDB.COL_PRICE));
+                extras.putInt(EditIntentExtras.KEY_TYPE, cur.getInt(UserDB.COL_TYPE));
+                extras.putInt(EditIntentExtras.KEY_SUBTYPE, cur.getInt(UserDB.COL_SUBTYPE));
+                extras.putInt(EditIntentExtras.KEY_VOLUME, cur.getInt(UserDB.COL_VOLUME));
+                extras.putInt(EditIntentExtras.KEY_PERCENT, cur.getInt(UserDB.COL_PERCENT));
+                extras.putInt(EditIntentExtras.KEY_DEPOSIT, cur.getInt(UserDB.COL_DEPOSIT));
 
 
                 Intent edit = new Intent(context, EditorActivity.class);
@@ -277,7 +279,7 @@ public class DB_USER_Activity extends ThemeActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         db_user.deleteRow(info.id);
-                        myList.setAdapter(null);
+                        listView.setAdapter(null);
                         populateListViewAsyncFromDB();
                     }
                 });
@@ -289,22 +291,12 @@ public class DB_USER_Activity extends ThemeActivity {
         return true;
     }
 
-    /**
-     * remember to initialize this in the onCreate()
-     */
-    private void createWarning(@NotNull Context _context) {
-        warning = new TextView(_context);
-        warning.setText(R.string.no_records);
-        warning.setGravity(Gravity.CENTER);
-        warning.setTextColor(getResources().getColor(R.color.warning));
-    }
-
     private void populateListViewAsyncFromDB() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "Populating list...");
-                cursor = db_user.getAllRows(new String[]{DBUser.KEY_ROWID, DBUser.KEY_NAME, DBUser.KEY_TYPE, DBUser.KEY_SUBTYPE, DBUser.KEY_PRICE, DBUser.KEY_VOLUME, DBUser.KEY_PERCENT, DBUser.KEY_ALC_ID});
+                cursor = db_user.getAllRows(new String[]{UserDB.KEY_ROWID, UserDB.KEY_NAME, UserDB.KEY_TYPE, UserDB.KEY_SUBTYPE, UserDB.KEY_PRICE, UserDB.KEY_VOLUME, UserDB.KEY_PERCENT, UserDB.KEY_ALC_ID});
 
                 //Setup mapping from cursor to view fields
                /* String[] fromFieldNames = new String[]
@@ -351,15 +343,13 @@ public class DB_USER_Activity extends ThemeActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        myList.setAdapter(myCursorAdapter);
-                        myCursorAdapter.notifyDataSetChanged();
-                        if (myList.getCount() == 0) {
-                            if (linear.getChildCount() < 2)
-                                linear.addView(warning, 0);
+                        listView.setAdapter(myCursorAdapter);
+                        if (myCursorAdapter != null) {
+                            myCursorAdapter.notifyDataSetChanged();
+                        }
+                        if (listView.getCount() == 0) {
                             //new AlertDialog.Builder(context).setMessage(R.string.no_records).setPositiveButton(android.R.string.ok, null).create().show();
                             Log.d(TAG, "Populating.. <NO RECORDS>");
-                        } else if (linear.getChildCount() > 1) {
-                            linear.removeView(warning);
                         }
                         Log.d(TAG, "Populating.. <SUCCESS>");
                     }
@@ -396,12 +386,6 @@ public class DB_USER_Activity extends ThemeActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (db_user.getCount() == 0) {
-                            if (linear.getChildCount() < 2) linear.addView(warning);
-
-                        } else if (linear.getChildCount() > 1) {
-                            linear.removeView(warning);
-                        }
                         cursor.requery();
                         myCursorAdapter.notifyDataSetChanged();
                         Log.d(TAG, "REQUERYING");

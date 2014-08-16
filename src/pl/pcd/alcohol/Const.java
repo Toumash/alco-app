@@ -49,6 +49,7 @@ public class Const {
             public static final String PROFILE_DOWNLOAD = "profileDownload";
             public static final String FETCH_RATINGS = "fetchRatings";
             public static final String RATE = "rate";
+            public static final String REGISTER_INSTALLATION = "reg_installation";
         }
 
     }
@@ -73,6 +74,7 @@ public class Const {
             public static final String COMMENTS_AUTO_REFRESH = "cm_auto_refresh";
             public static final String FIRST_RUN = "first_run";
             public static final String INSTALLATION_ID = "id";
+            public static final String INSTALLATION_REGISTERED = "inst_reg";
         }
 
     }

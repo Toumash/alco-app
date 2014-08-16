@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui.base;
+package pl.pcd.alcohol.activity.base;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -27,11 +27,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
-public class UpdatingActivity extends ThemeActivity {
+public class UpdatingActivity extends ThemeListActivity {
     @Override
     protected void onCreate(Bundle x) {
         super.onCreate(x);
-        SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
 
         if (Utils.isConnected(getApplicationContext())) {
 
@@ -56,27 +56,54 @@ public class UpdatingActivity extends ThemeActivity {
             if (Cfg.DEBUG) Log.d("Updater", "Not connected");
         }
 
-        //TODO:installation_id sending
-/*        if (sharedPreferences.getBoolean(Const.Prefs.Main.FIRST_RUN, true)) {
+        if (!sharedPreferences.getBoolean(Const.Prefs.Main.INSTALLATION_REGISTERED, false)) {
             String id = Installation.id(getApplicationContext());
+            JSONObject object = new JSONObject();
+            try {
+                object.put("action", Const.API.Actions.REGISTER_INSTALLATION);
+                object.put("id", id);
+            } catch (JSONException e) {
+                Log.d("Installation", e.toString());
+            }
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(Const.Prefs.Main.INSTALLATION_ID,id);
-            editor.putBoolean(Const.Prefs.Main.FIRST_RUN, false);
-            new AsyncTask<String, Void, String>(){
+            new AsyncTask<String, Void, String>() {
 
+                @Nullable
                 @Override
                 protected String doInBackground(String... json) {
-                    return JSONTransmitter.postJSON(json[0],Const.API.URL_JSON);
+                    return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON);
                 }
-            }
-        }*/
+
+                @Override
+                protected void onPostExecute(String x) {
+                    super.onPostExecute(x);
+                    String result = Utils.substringBetween(x, "<json>", "</json>");
+                    if (result != null) {
+                        try {
+                            JSONObject obj = new JSONObject(result);
+                            if (obj.getString("result").equals("ok")) {
+                                Log.d("Installation", "Install Reg: < OK >");
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean(Const.Prefs.Main.INSTALLATION_REGISTERED, true);
+                                editor.commit();
+                            } else {
+                                Log.d("Installation", "Install Reg : < ERROR >");
+                            }
+                        } catch (JSONException e) {
+                            Log.d("Installation response", e.toString());
+                        }
+
+                    }
+                }
+            }.execute(object.toString());
+        }
     }
 
     public static class Updater extends AsyncTask<Void, Integer, Void> {
         SharedPreferences sharedPreferences;
         ProgressDialog progressDialog;
         Context context;
+        @Nullable
         Runnable error = null;
         File outputFile;
 
@@ -178,9 +205,10 @@ public class UpdatingActivity extends ThemeActivity {
         Context ctx;
         SharedPreferences sharedPreferences;
         long date;
+        @Nullable
         AlertDialog.Builder alert = null;
 
-        public UpdateChecker(Context context, long date) {
+        public UpdateChecker(@NotNull Context context, long date) {
             super();
             this.ctx = context;
             sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);

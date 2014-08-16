@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
 
 public class ReportBugActivity extends ThemeActivity {
     Button bt_send;

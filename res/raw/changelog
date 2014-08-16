@@ -1,6 +1,7 @@
 ->0.0.6.140806
 +łączenie z api tylko z tokenami
 +małe usprawnienia i refactoring
++tracker instalacji
 
 ->0.0.5.140804
 +po wybraniu wódki niedostępne jest wybranie kaucji

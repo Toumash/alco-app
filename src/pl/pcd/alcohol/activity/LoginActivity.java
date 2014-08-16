@@ -1,9 +1,9 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,34 +14,40 @@ import android.widget.EditText;
 import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
 
-public class RegisterActivity extends ThemeActivity {
+
+public class LoginActivity extends ThemeActivity {
+
     @NotNull
-    static public String TAG = "RegisterActivity";
+    static public String TAG = "LoginActivity";
     boolean isLogged = false;
     @NotNull
     Context context = this;
-    Button bt_ok;
-    EditText et_login, et_email, et_password;
-    String username, email, password;
+    @NotNull
+    View.OnClickListener bt_register_onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent registerIntent = new Intent(context, RegisterActivity.class);
+            startActivity(registerIntent);
+        }
+    };
+    Button bt_ok, bt_register;
+    EditText et_username, et_password;
+    String username, password;
     @NotNull
     View.OnClickListener bt_ok_onClickListener = new View.OnClickListener() {
         @Override
         @SuppressWarnings({"ConstantConditions"})
         public void onClick(View view) {
-            username = et_login.getText().toString();
+            username = et_username.getText().toString();
             password = et_password.getText().toString();
-            email = et_email.getText().toString();
 
             if (validateInput(username, password)) {
-
-                register(username, email, password);
-
+                loginToServer(username, password);
             } else {
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setMessage(getString(R.string.login_invalid_data));
@@ -53,20 +59,6 @@ public class RegisterActivity extends ThemeActivity {
     SharedPreferences sharedPreferences;
     ProgressDialog pd_connecting;
 
-    @Override
-    protected void onCreate(Bundle x) {
-        super.onCreate(x);
-        setContentViewWithTitle(context, R.layout.activ_register, R.string.register_title);
-        bt_ok = (Button) findViewById(R.id.register_bt_ok);
-        et_login = (EditText) findViewById(R.id.register_et_login);
-        et_email = (EditText) findViewById(R.id.register_et_email);
-        et_password = (EditText) findViewById(R.id.register_et_password);
-
-        sharedPreferences = context.getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
-
-        bt_ok.setOnClickListener(bt_ok_onClickListener);
-    }
-
     private boolean validateInput(@NotNull String username, @NotNull String password) {
         if (username.length() < 3) return false;
         if (password.length() < 3) return false;
@@ -74,16 +66,36 @@ public class RegisterActivity extends ThemeActivity {
         return true;
     }
 
+    @Override
+    protected void onCreate(Bundle onSavedInstanceState) {
+        super.onCreate(onSavedInstanceState);
 
-    protected void register(String login, String email, String password) {
+        setContentViewWithTitle(context, R.layout.activ_login, R.string.login_activity);
+
+        bt_ok = (Button) findViewById(R.id.login_bt_ok);
+        bt_register = (Button) findViewById(R.id.login_bt_register);
+        et_username = (EditText) findViewById(R.id.login_et_username);
+        et_password = (EditText) findViewById(R.id.login_et_password);
+
+        sharedPreferences = context.getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
+
+        bt_ok.setOnClickListener(bt_ok_onClickListener);
+        bt_register.setOnClickListener(bt_register_onClickListener);
+        if (sharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false)) {
+            et_username.setText(sharedPreferences.getString(Const.Prefs.WEB_API.LOGIN, ""));
+            et_password.setText(Encryption.decodeBase64(sharedPreferences.getString(Const.Prefs.WEB_API.PASSWORD, "")));
+        }
+    }
+
+    protected void loginToServer(String username, @NotNull String password) {
         JSONObject data = new JSONObject();
         try {
-            data.put("action", Const.API.Actions.REGISTER);
-            data.put("login", login);
-            data.put("email", email);
+            data.put("action", Const.API.Actions.LOGIN);
+            //on web server everything is login, not username
+            data.put("login", username);
             data.put("password", password);
             if (Utils.isConnected(context)) {
-                new WebRegister().execute(data.toString());
+                new WebLogin().execute(data.toString());
             } else {
                 Toast.makeText(context, R.string.no_internet, Toast.LENGTH_LONG).show();
             }
@@ -92,7 +104,7 @@ public class RegisterActivity extends ThemeActivity {
         }
     }
 
-    protected class WebRegister extends AsyncTask<String, Void, String> {
+    private class WebLogin extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             pd_connecting = new ProgressDialog(context);
@@ -104,6 +116,7 @@ public class RegisterActivity extends ThemeActivity {
         @Nullable
         @Override
         protected String doInBackground(String... strings) {
+            if (Cfg.DEBUG) Log.i(TAG, "sent:" + strings[0]);
             return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON);
         }
 
@@ -116,13 +129,13 @@ public class RegisterActivity extends ThemeActivity {
                         JSONObject json = new JSONObject(result);
                         String code = json.getString("result");
                         //Toast.makeText(context, "RESULT:" + code, Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Json post result: " + json.toString());
+                        Log.i(TAG, "Json post result: " + json.toString());
 
                         if (code.equals(Const.API.LoginResult.OK)) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString(Const.Prefs.WEB_API.LOGIN, username);
-                            editor.putString(Const.Prefs.WEB_API.EMAIL, email);
                             editor.putString(Const.Prefs.WEB_API.PASSWORD, Encryption.encodeBase64(password));
+                            editor.putBoolean(Const.Prefs.WEB_API.LOGGED, true);
                             editor.commit();
                         }
 
@@ -131,55 +144,34 @@ public class RegisterActivity extends ThemeActivity {
                         String alert_content = "";
 
                         if (code.equals(Const.API.LoginResult.OK)) {
-                            alert_content = getString(R.string.registration_successfull);
+                            alert_content = getString(R.string.login_successful);
                             isLogged = true;
-                        } else if (code.equals(Const.API.LoginResult.LOGIN_PASSWORD)) {
+                        } else if (code.equals(Const.API.LoginResult.LOGIN_PASSWORD))
                             alert_content = getString(R.string.login_invalid_data);
-                        } else/* if (code.equals(Const.API.LoginResult.ERROR)) */ {
+                        else if (code.equals(Const.API.LoginResult.ERROR))
                             alert_content = getString(R.string.error);
+                        else if (code.equals(Const.API.LoginResult.ACTIVATION))
+                            alert_content = getString(R.string.activate_your_accout);
+
+                        if (isLogged) {
+                            Log.i(TAG, "Successfully logged in. Finishing login activity");
+                            Toast.makeText(context, android.R.string.ok, Toast.LENGTH_LONG).show();
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            alert.setMessage(alert_content);
+                            alert.setCancelable(true);
+                            alert.setNegativeButton(android.R.string.ok, null);
+                            alert.show();
                         }
-
-                        alert.setTitle(alert_content);
-                        JSONArray nfoArray = null;
-                        try {
-                            nfoArray = json.getJSONArray("nfo");
-                        } catch (JSONException e) {
-                            Log.i(TAG, e.toString());
-                        }
-                        if (nfoArray != null) {
-                            String info = "";
-                            for (int i = 0; i < nfoArray.length(); i++) {
-                                String fo = nfoArray.getString(i);
-                                if (fo.equals("EMAIL_IN_USE")) {
-                                    info = getString(R.string.email_in_use);
-                                    break;
-                                }
-                                info += fo;
-                                info += '\n';
-
-                            }
-                            alert.setMessage(info);
-                        }
-
-                        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if (isLogged) {
-                                    RegisterActivity.this.finish();
-                                }
-                            }
-                        });
-
-                        alert.show();
-
                     } catch (JSONException e) {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
-                        Log.d(TAG, e.toString());
+                        if (Cfg.DEBUG) Log.e(TAG, e.toString());
                     }
                 } else {
                     Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
                 }
-                Log.d(TAG, "Whole response:" + r);
+                if (Cfg.DEBUG) Log.i(TAG, "Whole response:" + r);
             } else {
                 Toast.makeText(context, R.string.network_error, Toast.LENGTH_LONG).show();
             }

@@ -1,6 +1,8 @@
 package pl.pcd.alcohol;
 
 import android.content.Context;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +13,11 @@ import java.util.UUID;
 public class Installation {
 
     private static final String INSTALLATION = "INSTALLATION";
+    @Nullable
     private static String sID = null;
 
-    public synchronized static String id(Context context) {
+    @Nullable
+    public synchronized static String id(@NotNull Context context) {
         if (sID == null) {
             File installation = new File(context.getFilesDir(), INSTALLATION);
             try {
@@ -27,6 +31,7 @@ public class Installation {
         return sID;
     }
 
+    @NotNull
     private static String readInstallationFile(File installation) throws IOException {
         RandomAccessFile f = new RandomAccessFile(installation, "r");
         byte[] bytes = new byte[(int) f.length()];
@@ -35,7 +40,7 @@ public class Installation {
         return new String(bytes);
     }
 
-    private static void writeInstallationFile(File installation) throws IOException {
+    private static void writeInstallationFile(@NotNull File installation) throws IOException {
         FileOutputStream out = new FileOutputStream(installation);
         String id = UUID.randomUUID().toString();
         out.write(id.getBytes());

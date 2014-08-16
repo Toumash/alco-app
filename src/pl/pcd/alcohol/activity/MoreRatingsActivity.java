@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui;
+package pl.pcd.alcohol.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,12 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.ui.base.ThemeActivity;
+import pl.pcd.alcohol.Const;
+import pl.pcd.alcohol.R;
+import pl.pcd.alcohol.Utils;
+import pl.pcd.alcohol.activity.base.ThemeActivity;
 import pl.pcd.alcohol.webapi.RatingsDownloader;
+import pl.pcd.alcohol.webapi.contract.Rating;
 
 import java.util.ArrayList;
 

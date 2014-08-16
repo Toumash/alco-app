@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pl.pcd.alcohol.database.MainDB;
 
 
 public abstract class AlcoholCursorAdapter extends CursorAdapter {
@@ -109,13 +110,13 @@ public abstract class AlcoholCursorAdapter extends CursorAdapter {
         public int name, price, volume, type, subtype, id, percent;
 
         public CurIndex(@NotNull Cursor c) {
-            this.name = c.getColumnIndexOrThrow(DBMain.KEY_NAME);
-            this.price = c.getColumnIndexOrThrow(DBMain.KEY_PRICE);
-            this.volume = c.getColumnIndexOrThrow(DBMain.KEY_VOLUME);
-            this.type = c.getColumnIndexOrThrow(DBMain.KEY_TYPE);
-            this.subtype = c.getColumnIndexOrThrow(DBMain.KEY_SUBTYPE);
-            this.id = c.getColumnIndexOrThrow(DBMain.KEY_ID_ALC);
-            this.percent = c.getColumnIndexOrThrow(DBMain.KEY_PERCENT);
+            this.name = c.getColumnIndexOrThrow(MainDB.KEY_NAME);
+            this.price = c.getColumnIndexOrThrow(MainDB.KEY_PRICE);
+            this.volume = c.getColumnIndexOrThrow(MainDB.KEY_VOLUME);
+            this.type = c.getColumnIndexOrThrow(MainDB.KEY_TYPE);
+            this.subtype = c.getColumnIndexOrThrow(MainDB.KEY_SUBTYPE);
+            this.id = c.getColumnIndexOrThrow(MainDB.KEY_ID_ALC);
+            this.percent = c.getColumnIndexOrThrow(MainDB.KEY_PERCENT);
         }
 
         public int getName() {

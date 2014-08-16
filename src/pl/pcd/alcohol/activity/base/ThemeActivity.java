@@ -1,4 +1,4 @@
-package pl.pcd.alcohol.ui.base;
+package pl.pcd.alcohol.activity.base;
 
 import android.content.Context;
 import android.content.SharedPreferences;
