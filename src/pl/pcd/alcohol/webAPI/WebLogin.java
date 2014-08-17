@@ -45,7 +45,7 @@ public class WebLogin extends AsyncTask<Void, Void, String> {
     @Nullable
     @Override
     protected String doInBackground(Void... strings) {
-        return JSONTransmitter.postJSON(this.request.toString(), Const.API.URL_JSON);
+        return JSONTransmitter.postJSON(this.request.toString(), Const.API.URL_JSON, 7000, 10000);
     }
 
     @Override

@@ -117,7 +117,7 @@ public class LoginActivity extends ThemeActivity {
         @Override
         protected String doInBackground(String... strings) {
             if (Cfg.DEBUG) Log.i(TAG, "sent:" + strings[0]);
-            return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON);
+            return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON, 7000, 10000);
         }
 
         protected void onPostExecute(@Nullable String r) {

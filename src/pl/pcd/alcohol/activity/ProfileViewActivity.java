@@ -170,7 +170,7 @@ public class ProfileViewActivity extends ThemeActivity {
         @Nullable
         @Override
         protected String doInBackground(Void... z) {
-            return JSONTransmitter.postJSON(this.request, Const.API.URL_JSON);
+            return JSONTransmitter.postJSON(this.request, Const.API.URL_JSON, 7000, 10000);
         }
 
         protected void onPostExecute(@Nullable String x) {

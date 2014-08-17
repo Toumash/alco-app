@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.Const.EditIntentExtras;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
 import pl.pcd.alcohol.database.UserDB;
 import pl.pcd.alcohol.webapi.WebLogin;
@@ -212,19 +211,7 @@ public class DB_USER_Activity extends ThemeListActivity {
 
                 do {
                     alcohol = new JSONObject();
-/*
-                    //WORKAROUND for DB strange floats
-                    Float rawPrice = c.getFloat(DB_USER.COL_PRICE);
-                    Float price = rawPrice;
-                    String priceS = String.valueOf(rawPrice);
-                    if (priceS.contains(".")) {
-                        int index = priceS.indexOf(".");
-                        if (priceS.length() > index + 3)
-                            price = Float.valueOf(priceS.substring(0, index - 1) + "." + priceS.substring(index + 1, index + 2));
-                    }
-                    /////////////////////////////////*/
                     alcohol.put(UserDB.KEY_NAME, c.getString(UserDB.COL_NAME));
-                    /*alcohol.put(DB_USER.KEY_PRICE, price);*/
                     alcohol.put(UserDB.KEY_PRICE, c.getDouble(UserDB.COL_PRICE));
                     alcohol.put(UserDB.KEY_TYPE, c.getInt(UserDB.COL_TYPE));
                     alcohol.put(UserDB.KEY_SUBTYPE, c.getInt(UserDB.COL_SUBTYPE));
@@ -257,14 +244,14 @@ public class DB_USER_Activity extends ThemeListActivity {
                 Log.d(TAG, "selected Editing of the " + cur.getString(UserDB.COL_NAME) + " record");
 
                 Bundle extras = new Bundle();
-                extras.putLong(EditIntentExtras.KEY_ID, cur.getLong(UserDB.COL_ROWID));
-                extras.putString(EditIntentExtras.KEY_NAME, cur.getString(UserDB.COL_NAME));
-                extras.putFloat(EditIntentExtras.KEY_PRICE, cur.getFloat(UserDB.COL_PRICE));
-                extras.putInt(EditIntentExtras.KEY_TYPE, cur.getInt(UserDB.COL_TYPE));
-                extras.putInt(EditIntentExtras.KEY_SUBTYPE, cur.getInt(UserDB.COL_SUBTYPE));
-                extras.putInt(EditIntentExtras.KEY_VOLUME, cur.getInt(UserDB.COL_VOLUME));
-                extras.putInt(EditIntentExtras.KEY_PERCENT, cur.getInt(UserDB.COL_PERCENT));
-                extras.putInt(EditIntentExtras.KEY_DEPOSIT, cur.getInt(UserDB.COL_DEPOSIT));
+                extras.putLong(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_ID, cur.getLong(UserDB.COL_ROWID));
+                extras.putString(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_NAME, cur.getString(UserDB.COL_NAME));
+                extras.putFloat(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_PRICE, cur.getFloat(UserDB.COL_PRICE));
+                extras.putInt(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_TYPE, cur.getInt(UserDB.COL_TYPE));
+                extras.putInt(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_SUBTYPE, cur.getInt(UserDB.COL_SUBTYPE));
+                extras.putInt(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_VOLUME, cur.getInt(UserDB.COL_VOLUME));
+                extras.putInt(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_PERCENT, cur.getInt(UserDB.COL_PERCENT));
+                extras.putInt(EditorActivity.EditActivityIntents.EditIntentExtras.KEY_DEPOSIT, cur.getInt(UserDB.COL_DEPOSIT));
 
 
                 Intent edit = new Intent(context, EditorActivity.class);
@@ -364,7 +351,7 @@ public class DB_USER_Activity extends ThemeListActivity {
         @Override
         protected String doInBackground(String... json) {
             Log.d(TAG, "Starting upload of JSON");
-            return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON);
+            return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON, 7000, 10000);
         }
 
         @Override

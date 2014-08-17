@@ -14,17 +14,6 @@ public class Const {
         }
     }
 
-    public static final class EditIntentExtras {
-        public static final String KEY_NAME = "name";
-        public static final String KEY_PRICE = "price";
-        public static final String KEY_TYPE = "type";
-        public static final String KEY_SUBTYPE = "subtype";
-        public static final String KEY_VOLUME = "volume";
-        public static final String KEY_PERCENT = "percent";
-        public static final String KEY_DEPOSIT = "deposit";
-        public static final String KEY_ID = "id";
-    }
-
     public static final class API {
         public static final String URL_ABOUT = "http://code-sharks.pl" + "/index.php/o-nas"; //About is on the main domain, not on the sub - "dev"
         public static final String URL_VERSION = Cfg.URL_BASE + "/version.json";

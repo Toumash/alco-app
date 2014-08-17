@@ -35,7 +35,7 @@ public class AlcoholReporter extends AsyncTask<String, Void, String> {
     @Nullable
     @Override
     protected String doInBackground(String... json) {
-        return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON);
+        return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON, 7000, 10000);
     }
 
     @Override

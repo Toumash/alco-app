@@ -104,7 +104,7 @@ public class RegisterActivity extends ThemeActivity {
         @Nullable
         @Override
         protected String doInBackground(String... strings) {
-            return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON);
+            return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON, 7000, 10000);
         }
 
         protected void onPostExecute(@Nullable String r) {

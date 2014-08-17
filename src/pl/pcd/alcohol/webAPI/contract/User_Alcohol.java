@@ -2,15 +2,15 @@ package pl.pcd.alcohol.webapi.contract;
 
 public class User_Alcohol {
     private String _name;
-    private float _price;
+    private double _price;
     private int _volume;
-    private float _percent;
+    private double _percent;
     private int _type;
     private int _subtype;
     private int _deposit;
     private int _alcID;
 
-    public User_Alcohol(String name, float price, int volume, float percent, int type, int subtype, int deposit) {
+    public User_Alcohol(String name, double price, int volume, double percent, int type, int subtype, int deposit) {
         _name = name;
         _price = price;
         _volume = volume;
@@ -61,11 +61,11 @@ public class User_Alcohol {
         this._name = _name;
     }
 
-    public float get_percent() {
+    public double get_percent() {
         return _percent;
     }
 
-    public void set_percent(float _percent) {
+    public void set_percent(double _percent) {
         this._percent = _percent;
     }
 
@@ -77,11 +77,11 @@ public class User_Alcohol {
         this._volume = _volume;
     }
 
-    public float get_price() {
+    public double get_price() {
         return _price;
     }
 
-    public void set_price(float _price) {
+    public void set_price(double _price) {
         this._price = _price;
     }
 

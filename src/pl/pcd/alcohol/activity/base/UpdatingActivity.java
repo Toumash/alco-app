@@ -71,7 +71,7 @@ public class UpdatingActivity extends ThemeListActivity {
                 @Nullable
                 @Override
                 protected String doInBackground(String... json) {
-                    return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON);
+                    return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON, 7000, 10000);
                 }
 
                 @Override
@@ -254,7 +254,7 @@ public class UpdatingActivity extends ThemeListActivity {
             }
             int currentVersion = (pInfo != null) ? pInfo.versionCode : 0;
             try {
-                JSONObject json = new JSONObject(JSONTransmitter.downloadWebsite(Const.API.URL_VERSION));
+                JSONObject json = new JSONObject(JSONTransmitter.simpleGetRequest(Const.API.URL_VERSION));
                 this.description = json.getString("info");
                 sharedPreferences.edit().putLong(Const.Prefs.Main.LAST_UPDATE_CHECK, this.date).commit();
                 return json.getInt("version") > currentVersion;

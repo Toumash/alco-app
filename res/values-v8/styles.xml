@@ -23,4 +23,8 @@
         <item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item>
         <!--        <item name="android:background">#F2B1DBF3</item>-->
     </style>
+
+    <style name="HackerStyle" parent="Theme.Sherlock">
+
+    </style>
 </resources>

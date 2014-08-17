@@ -5,14 +5,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.webapi.Config;
@@ -25,42 +24,36 @@ import java.net.SocketTimeoutException;
 
 public class JSONTransmitter {
     /**
+     *
+     * @param JSON json as a string to post to a WebService
+     * @param url url to connect
+     * @param connTimeout connectionTimeout. Connection Establishing time
+     * @param soTimeout SocketTimeout. Overall connetion time
      * @return null if there was an error connecting server
      */
     @Nullable
-    public static String postJSON(@NotNull String JSON, String url) {
-        InputStream inputStream = null;
+    public static String postJSON(@NotNull String JSON, String url, int connTimeout, int soTimeout)
+    //TODO:Throwning Exceptions: SocketTimeoutException,IOException(More general)
+    {
+        InputStream inputStream;
         String result = "";
         try {
             JSONObject obj = new JSONObject(JSON);
-            obj.put("api_token", Config.TOKEN);
+            obj.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(Config.TOKEN)));
             JSON = obj.toString();
             final HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, 1000 * 7);
-            HttpConnectionParams.setSoTimeout(httpParams, 1000 * 10);
+            HttpConnectionParams.setConnectionTimeout(httpParams, connTimeout);
+            HttpConnectionParams.setSoTimeout(httpParams, soTimeout);
             HttpClient httpclient = new DefaultHttpClient(httpParams);
 
             HttpPost httpPost = new HttpPost(url);
 
-            httpPost.setEntity(new ByteArrayEntity(new String(JSON.getBytes(), "utf-8").getBytes()));
+            httpPost.setEntity(new StringEntity(JSON));
 
-            JSONArray postjson = new JSONArray();
-            postjson.put(JSON);
-            httpPost.setHeader("json", new String(JSON.getBytes(), "utf-8"));
-            httpPost.getParams().setParameter("jsonpost", postjson);
-            // 5. set json to StringEntity
-            // StringEntity se = new StringEntity(JSON);
-
-            // 6. set httpPost Entity
-            //httpPost.setEntity(new UrlEncodedFormEntity(JSON.toString(), HTTP.UTF_8));
-
-            // 7. Set some headers to inform server about the type of the content
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json; charset=utf-8 ");
 
-
             HttpResponse httpResponse = httpclient.execute(httpPost);
-
             inputStream = httpResponse.getEntity().getContent();
 
             if (inputStream != null)
@@ -80,9 +73,9 @@ public class JSONTransmitter {
         return result;
     }
 
-    private static String convertInputStreamToString(@NotNull InputStream inputStream) throws IOException {
+    public static String convertInputStreamToString(@NotNull InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
+        String line;
         String result = "";
         while ((line = bufferedReader.readLine()) != null)
             result += line;
@@ -92,7 +85,11 @@ public class JSONTransmitter {
 
     }
 
-    public static String downloadWebsite(String url) {
+    /**
+     * @param url url to request GET method
+     * @return full response, null if network error
+     */
+    public static String simpleGetRequest(String url) {
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
         try {

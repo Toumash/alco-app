@@ -1,6 +1,7 @@
 package pl.pcd.alcohol.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.widget.*;
 import org.jetbrains.annotations.NotNull;
 import pl.pcd.alcohol.Cfg;
-import pl.pcd.alcohol.Const.EditIntentExtras;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
 import pl.pcd.alcohol.database.UserDB;
@@ -31,6 +31,25 @@ public class EditorActivity extends ThemeActivity {
     Spinner sr_type, sr_subtype;
     Button bt_commit;
     long Alcohol_ID_fromIntent;
+
+    public static Intent createIntent(Context context, long alcoholID, String name, double price, double percent, int type, int subtype, int volume, boolean deposit) {
+        //TODO: db fetching done in EditorActivity not in Calling Activity
+        Intent intent = new Intent(context, EditorActivity.class);
+        Bundle extras = new Bundle();
+        extras.putLong("id", alcoholID);
+        extras.putString(EditActivityIntents.EditIntentExtras.KEY_NAME, name);
+        extras.putDouble(EditActivityIntents.EditIntentExtras.KEY_PRICE, price);
+        extras.putInt(EditActivityIntents.EditIntentExtras.KEY_TYPE, type);
+        extras.putInt(EditActivityIntents.EditIntentExtras.KEY_SUBTYPE, subtype);
+        extras.putInt(EditActivityIntents.EditIntentExtras.KEY_VOLUME, volume);
+        extras.putDouble(EditActivityIntents.EditIntentExtras.KEY_PERCENT, percent);
+        extras.putInt(EditActivityIntents.EditIntentExtras.KEY_DEPOSIT, deposit ? 1 : 0);
+
+
+        intent.putExtras(extras);
+
+        return intent;
+    }
 
     /**
      * @return empty list if there is no error
@@ -59,8 +78,6 @@ public class EditorActivity extends ThemeActivity {
 
         return ret;
     }
-
-    ;
 
     private void openDB() {
         db = new UserDB(this);
@@ -106,10 +123,10 @@ public class EditorActivity extends ThemeActivity {
         // as it is in EDIT_MODE
         Bundle xtr = getIntent().getExtras();
         if (xtr != null) {
-            Alcohol_ID_fromIntent = xtr.getLong(EditIntentExtras.KEY_ID);
-            et_name.setText(xtr.getString(EditIntentExtras.KEY_NAME));
-            et_price.setText(Float.toString(xtr.getFloat(EditIntentExtras.KEY_PRICE)));
-            sr_type.setSelection(xtr.getInt(EditIntentExtras.KEY_TYPE));
+            Alcohol_ID_fromIntent = xtr.getLong(EditActivityIntents.EditIntentExtras.KEY_ID);
+            et_name.setText(xtr.getString(EditActivityIntents.EditIntentExtras.KEY_NAME));
+            et_price.setText(Float.toString(xtr.getFloat(EditActivityIntents.EditIntentExtras.KEY_PRICE)));
+            sr_type.setSelection(xtr.getInt(EditActivityIntents.EditIntentExtras.KEY_TYPE));
             int arrayRId = -1;
             switch ((int) sr_type.getSelectedItemId()) {
                 case User_Alcohol.Type.NISKOPROCENTOWY:
@@ -128,10 +145,10 @@ public class EditorActivity extends ThemeActivity {
             if (arrayRId != -1) buildNSetAdapterAlcSubType(arrayRId);
             // buildNSetAdapterAlcSubType();
             // sr_subtype.setSelection(xtr.getInt(EditIntentExtras.KEY_SUBTYPE));
-            et_volume.setText(Integer.toString(xtr.getInt(EditIntentExtras.KEY_VOLUME)));
-            et_percent.setText(Integer.toString(xtr.getInt(EditIntentExtras.KEY_PERCENT)));
+            et_volume.setText(Integer.toString(xtr.getInt(EditActivityIntents.EditIntentExtras.KEY_VOLUME)));
+            et_percent.setText(Integer.toString(xtr.getInt(EditActivityIntents.EditIntentExtras.KEY_PERCENT)));
             bt_commit.setText(getResources().getString(android.R.string.ok));
-            cb_deposit.setChecked(xtr.getInt(EditIntentExtras.KEY_DEPOSIT) == 1);
+            cb_deposit.setChecked(xtr.getInt(EditActivityIntents.EditIntentExtras.KEY_DEPOSIT) == 1);
             EDIT_MODE = EDIT_MODES.UPDATE;
 
         } else {
@@ -193,6 +210,20 @@ public class EditorActivity extends ThemeActivity {
         public static final int UPDATE = 2;
     }
 
+    public static final class EditActivityIntents {
+
+        public static final class EditIntentExtras {
+            public static final String KEY_NAME = "name";
+            public static final String KEY_PRICE = "price";
+            public static final String KEY_TYPE = "type";
+            public static final String KEY_SUBTYPE = "subtype";
+            public static final String KEY_VOLUME = "volume";
+            public static final String KEY_PERCENT = "percent";
+            public static final String KEY_DEPOSIT = "deposit";
+            public static final String KEY_ID = "id";
+        }
+    }
+
     private class onClick_Commit implements View.OnClickListener {
         @Override
         public void onClick(@NotNull View view) {
@@ -207,9 +238,9 @@ public class EditorActivity extends ThemeActivity {
                 //noinspection ConstantConditions
                 User_Alcohol newAlcohol = new User_Alcohol(
                         et_name.getText().toString().trim(),
-                        Float.valueOf(et_price.getText().toString().trim()),
+                        Double.valueOf(et_price.getText().toString().trim()),
                         Integer.valueOf(et_volume.getText().toString().trim()),
-                        Float.valueOf(et_percent.getText().toString().trim()), (int) sr_type.getSelectedItemId(), (int) sr_subtype.getSelectedItemId(), deposit);
+                        Double.valueOf(et_percent.getText().toString().trim()), (int) sr_type.getSelectedItemId(), (int) sr_subtype.getSelectedItemId(), deposit);
                 switch (EDIT_MODE) {
                     case EDIT_MODES.ADD: {
                         db.insertRow(newAlcohol);

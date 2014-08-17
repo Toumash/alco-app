@@ -38,7 +38,7 @@ public class RatingsDownloader extends AsyncTask<Void, Void, Void> {
             e.printStackTrace();
         }
 
-        String received = JSONTransmitter.postJSON(json.toString(), Const.API.URL_JSON);
+        String received = JSONTransmitter.postJSON(json.toString(), Const.API.URL_JSON, 7000, 10000);
         String receivedJSONtext = Utils.substringBetween(received, "<json>", "</json>");
         if (Cfg.DEBUG) Log.d(TAG, "response:" + receivedJSONtext);
         if (receivedJSONtext != null) {
