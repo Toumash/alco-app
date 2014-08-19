@@ -27,4 +27,6 @@
     <style name="HackerStyle" parent="Theme.Sherlock">
 
     </style>
+
+    <style name="AppDialogTheme" parent="android:Theme.Dialog"></style>
 </resources>

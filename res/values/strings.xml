@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Alcohol Ranker</string>
-    <string name="AppVersion">0.0.6.140806</string>
+    <string name="AppVersion">0.0.6.140824</string>
     <string name="version">Version</string>
     <string name="forceUpdate">Force an update</string>
     <string name="release">Release</string>
@@ -114,6 +114,7 @@
     <string name="prefs_comments_auto_load">Comments Autoloading</string>
     <string name="prefs_comments_auto_load_sum">Loads comments after entering to alcohol\'s detailed view</string>
     <string name="prefs_logout_do_you_dare">Log out?</string>
+    <string name="about_app">About</string>
 
     <!-- BUG REPORTER -->
 
@@ -138,6 +139,12 @@
     <!-- MORE RATINGS -->
     <string name="more_ratings_title">Comments</string>
     <string name="nope">no</string>
-
-
+    <string name="about_copyright">Copyright © 2014 Code Sharks\nAll Rights Reserved</string>
+    <string name="prefs_about_application">Info about this app</string>
+    <string name="about_license">This application is protected by international law and copyright.</string>
+    <string name="about_bt_license">License</string>
+    <string name="apache_license">Apache License</string>
+    <string name="link_apache_license">http://www.apache.org/licenses/LICENSE-2.0.html</string>
+    <string name="donate">Donate</string>
+    <string name="donate_desc">Buy me a coffe : )</string>
 </resources>

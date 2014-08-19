@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="pl.pcd.alcohol"
-          android:versionCode="11"
+          android:versionCode="12"
           android:versionName="@string/AppVersion">
 
     <uses-sdk
@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- for dialogs -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <!--    <uses-permission android:name="android.permission.WAKE_LOCK"/>-->
 
     <application
@@ -66,6 +68,13 @@
                 android:theme="@style/PreferenceScreen">
         </activity>
 
+        <!-- PREFERENCES -->
+
+        <activity
+                android:name=".activity.AboutActivity"
+                android:label="@string/about_app">
+        </activity>
+
         <!--    LOGIN    -->
 
         <activity
@@ -93,7 +102,8 @@
 
         <activity
                 android:name=".activity.ReportBugActivity"
-                android:label="@string/pref_report_issue">
+                android:label="@string/pref_report_issue"
+                android:windowSoftInputMode="stateUnchanged">
         </activity>
 
         <!--    ALCOHOL INFO    -->
@@ -109,5 +119,20 @@
                 android:name=".activity.MoreRatingsActivity"
                 android:label="@string/more_ratings_title">
         </activity>
+
+        <!-- UPDATER -->
+
+        <activity
+                android:name=".dialog.UpdaterDialog"
+                android:theme="@style/AppDialogTheme.Custom"
+                android:excludeFromRecents="true">
+        </activity>
+
+        <!-- Updater SERVICE -->
+        <service android:name=".service.UpdaterIntentService">
+
+        </service>
+
+
     </application>
 </manifest>

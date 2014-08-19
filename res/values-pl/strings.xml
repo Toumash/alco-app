@@ -102,6 +102,7 @@
     <string name="prefs_comments_auto_load">Autoładuj komentarze</string>
     <string name="prefs_comments_auto_load_sum">Ładuje komentarze tuż po wejściu do szczegółowego widoku alkoholu</string>
     <string name="prefs_logout_do_you_dare">Wylogować?</string>
+    <string name="about_app">O aplikacji</string>
 
     <!-- REPORT BUG -->
     <string name="report_thanks_for">Dziękujemy za feedback. Sprawdz maila aby śledzić na bieżąco swoje zgłoszenie</string>
@@ -124,6 +125,11 @@
     <!-- MORE RATINGS -->
     <string name="more_ratings_title">Komentarze</string>
     <string name="nope">nie</string>
-
-
+    <string name="about_copyright">Copyright © 2014 Code Sharks\nAll Rights Reserved</string>
+    <string name="prefs_about_application">Informacje o aplikacji</string>
+    <string name="about_license">Ta aplikacja jest prawnie chroniona przez licencje apache, dostępną poniżej</string>
+    <string name="about_bt_license">Licencja</string>
+    <string name="apache_license">Apache License</string>
+    <string name="donate">Dotacja</string>
+    <string name="donate_desc">Postaw nam kawę</string>
 </resources>

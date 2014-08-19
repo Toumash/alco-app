@@ -1,3 +1,19 @@
+/******************************************************************************
+ * Copyright 2014 CodeSharks                                                  *
+ *                                                                            *
+ * Licensed under the Apache License, Version 2.0 (the "License");            *
+ * you may not use this file except in compliance with the License.           *
+ * You may obtain a copy of the License at                                    *
+ *                                                                            *
+ *     http://www.apache.org/licenses/LICENSE-2.0                             *
+ *                                                                            *
+ * Unless required by applicable law or agreed to in writing, software        *
+ * distributed under the License is distributed on an "AS IS" BASIS,          *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+ * See the License for the specific language governing permissions and        *
+ * limitations under the License.                                             *
+ ******************************************************************************/
+
 package pl.pcd.alcohol.activity;
 
 import android.content.Context;
@@ -30,7 +46,7 @@ public class EditorActivity extends ThemeActivity {
     CheckBox cb_deposit;
     Spinner sr_type, sr_subtype;
     Button bt_commit;
-    long Alcohol_ID_fromIntent;
+    long alcohol_id_fromIntent;
 
     public static Intent createIntent(Context context, long alcoholID, String name, double price, double percent, int type, int subtype, int volume, boolean deposit) {
         //TODO: db fetching done in EditorActivity not in Calling Activity
@@ -123,7 +139,7 @@ public class EditorActivity extends ThemeActivity {
         // as it is in EDIT_MODE
         Bundle xtr = getIntent().getExtras();
         if (xtr != null) {
-            Alcohol_ID_fromIntent = xtr.getLong(EditActivityIntents.EditIntentExtras.KEY_ID);
+            alcohol_id_fromIntent = xtr.getLong(EditActivityIntents.EditIntentExtras.KEY_ID);
             et_name.setText(xtr.getString(EditActivityIntents.EditIntentExtras.KEY_NAME));
             et_price.setText(Float.toString(xtr.getFloat(EditActivityIntents.EditIntentExtras.KEY_PRICE)));
             sr_type.setSelection(xtr.getInt(EditActivityIntents.EditIntentExtras.KEY_TYPE));
@@ -258,7 +274,7 @@ public class EditorActivity extends ThemeActivity {
                     }
                     break;
                     case EDIT_MODES.UPDATE: {
-                        db.updateRow(Alcohol_ID_fromIntent, newAlcohol);
+                        db.updateRow(alcohol_id_fromIntent, newAlcohol);
                         Log.d(TAG, "Alcohol Updated");
                         finish();
                     }
