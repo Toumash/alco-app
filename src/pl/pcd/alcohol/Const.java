@@ -16,6 +16,8 @@
 
 package pl.pcd.alcohol;
 
+import pl.pcd.alcohol.webapi.APICfg;
+
 public class Const {
     public static final int REQUEST_CODE_ADD = 1;
     public static final int REQUEST_CODE_UPDATE = 2;
@@ -32,11 +34,11 @@ public class Const {
 
     public static final class API {
         public static final String URL_ABOUT = "http://code-sharks.pl" + "/index.php/o-nas"; //About is on the main domain, not on the sub - "dev"
-        public static final String URL_VERSION = Cfg.URL_BASE + "/version.json";
-        public static final String URL_JSON = Cfg.URL_BASE + "/api?json=";
-        public static final String URL_UPDATE = Cfg.URL_BASE + "/update?file=Alcohol.apk";//"/uploads/Alcohol.apk";
-        public static final String URL_MAIN = Cfg.URL_BASE + "/api?db=main";
-        public static final String URL_USER = Cfg.URL_BASE + "/api?db=user";
+        public static final String URL_VERSION = APICfg.URL_BASE + "/version.json";
+        public static final String URL_JSON = APICfg.URL_BASE + "/api?json=";
+        public static final String URL_UPDATE = APICfg.URL_BASE + "/update?file=Alcohol.apk";//"/uploads/Alcohol.apk";
+        public static final String URL_MAIN = APICfg.URL_BASE + "/api?db=main";
+        public static final String URL_USER = APICfg.URL_BASE + "/api?db=user";
 
         public static final class LoginResult {
             public static final String OK = "ok";

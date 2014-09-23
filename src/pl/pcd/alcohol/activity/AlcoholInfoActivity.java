@@ -414,6 +414,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
                                             e.printStackTrace();
                                         }
                                     } else {
+                                        rb_rate.setRating(0f);
                                         Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                                     }
                                 }

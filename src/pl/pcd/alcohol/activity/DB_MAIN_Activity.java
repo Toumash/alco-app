@@ -122,7 +122,6 @@ public class DB_MAIN_Activity extends ThemeListActivity {
 
         setContentViewWithTitle(context, R.layout.activ_main_list, R.string.alcohol_list);
         sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
-        // listView = (ListView) findViewById(R.id.main_db_list_view);
         listView = this.getListView();
         linear = (LinearLayout) findViewById(R.id.linearRoot_main_db);
         et_search = (EditText) findViewById(R.id.main_search);

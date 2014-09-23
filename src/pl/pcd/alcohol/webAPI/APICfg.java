@@ -16,6 +16,12 @@
 
 package pl.pcd.alcohol.webapi;
 
-public class Config {
+public class APICfg {
     public static final String TOKEN = "8cd530cd682a962f598e794e7e12d285";
+    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
+
+    public static final boolean testingServer = false;
+    private static final String testServer = "http://192.168.0.111";
+    private static final String productionServer = "http://dev.code-sharks.pl";
+    public static final String URL_BASE = testingServer ? testServer : productionServer;
 }

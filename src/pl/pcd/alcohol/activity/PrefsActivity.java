@@ -100,7 +100,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
             pref_profile.setIntent(new Intent(context, ProfileViewActivity.class));
             pref_about_app.setIntent(new Intent(context, AboutActivity.class));
             pref_reportIssue.setIntent(new Intent(context, ReportBugActivity.class));
-            String donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=B6BJ6ZCHWCKD8";
+            String donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=C6JJP9JE5BUEQ";
             pref_donate.setIntent(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(donate_url)));
         }
         pref_update.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
