@@ -14,27 +14,35 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.webapi.contract;
+package pl.pcd.alcohol.alcoapi.contract;
 
-public class Main_Alcohol {
-    private long _id;
+public class User_Alcohol {
     private String _name;
-    private float _price;
+    private double _price;
     private int _volume;
-    private float _percent;
+    private double _percent;
     private int _type;
     private int _subtype;
     private int _deposit;
+    private int _alcID;
 
-    public Main_Alcohol(long id, String name, float price, int type, int subtype, int volume, float percent, int deposit) {
-        this._id = id;
-        this._name = name;
-        this._price = price;
-        this._type = type;
-        this._subtype = subtype;
-        this._volume = volume;
-        this._percent = percent;
-        this._deposit = deposit;
+    public User_Alcohol(String name, double price, int volume, double percent, int type, int subtype, int deposit) {
+        _name = name;
+        _price = price;
+        _volume = volume;
+        _percent = percent;
+        _type = type;
+        _subtype = subtype;
+        _deposit = deposit;
+
+    }
+
+    public int get_alcID() {
+        return _alcID;
+    }
+
+    public void set_alcID(int _alcID) {
+        this._alcID = _alcID;
     }
 
     public int get_deposit() {
@@ -43,14 +51,6 @@ public class Main_Alcohol {
 
     public void set_deposit(int _deposit) {
         this._deposit = _deposit;
-    }
-
-    public long getId() {
-        return _id;
-    }
-
-    public void setId(long id) {
-        this._id = id;
     }
 
     public int get_subtype() {
@@ -77,11 +77,11 @@ public class Main_Alcohol {
         this._name = _name;
     }
 
-    public float get_percent() {
+    public double get_percent() {
         return _percent;
     }
 
-    public void set_percent(float _percent) {
+    public void set_percent(double _percent) {
         this._percent = _percent;
     }
 
@@ -93,11 +93,11 @@ public class Main_Alcohol {
         this._volume = _volume;
     }
 
-    public float get_price() {
+    public double get_price() {
         return _price;
     }
 
-    public void set_price(float _price) {
+    public void set_price(double _price) {
         this._price = _price;
     }
 

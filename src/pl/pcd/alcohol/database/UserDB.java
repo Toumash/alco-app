@@ -24,7 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.webapi.contract.User_Alcohol;
+import pl.pcd.alcohol.alcoapi.contract.User_Alcohol;
 
 public class UserDB {
 

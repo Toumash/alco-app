@@ -17,18 +17,28 @@
 package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+import org.json.JSONObject;
 import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.APIFactory;
+import pl.pcd.alcohol.alcoapi.AlcoAPI;
+import pl.pcd.alcohol.alcoapi.AlcoAPIAdapter.TypedJsonString;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Tomasz on 2014-08-19.
@@ -41,6 +51,30 @@ public class AboutActivity extends ThemeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        {
+            final AlcoAPI api = APIFactory.getAlcoAPIClient();
+            if (Utils.isConnected(context)) {
+                final ProgressDialog pd = new ProgressDialog(context);
+                pd.setIndeterminate(true);
+                pd.setMessage("Waiting for server resonse...");
+                pd.show();
+                api.getAllAlcohols(new TypedJsonString("{\"x\":\"s\"}"), new Callback<JSONObject>() {
+                    @Override
+                    public void success(JSONObject string, Response response) {
+                        pd.dismiss();
+                        Log.d("xd", string.toString());
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+                        pd.dismiss();
+                        Log.d("xd", "ERROR!!!!!!!!" + retrofitError.toString());
+                    }
+                });
+            } else {
+                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
+            }
+        }
         setContentView(R.layout.activ_about);
         bt_license = (Button) findViewById(R.id.about_bt_license);
         iv_app = (ImageView) findViewById(R.id.about_iv_app);

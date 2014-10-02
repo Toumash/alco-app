@@ -14,7 +14,7 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.webapi;
+package pl.pcd.alcohol.alcoapi;
 
 import android.app.ProgressDialog;
 import android.content.Context;

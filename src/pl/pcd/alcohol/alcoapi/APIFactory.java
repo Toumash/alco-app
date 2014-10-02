@@ -14,14 +14,13 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.webapi;
+package pl.pcd.alcohol.alcoapi;
 
-public class APICfg {
-    public static final String TOKEN = "8cd530cd682a962f598e794e7e12d285";
-    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
+import retrofit.RestAdapter;
 
-    public static final boolean testingServer = false;
-    private static final String testServer = "http://192.168.0.111";
-    private static final String productionServer = "http://dev.code-sharks.pl";
-    public static final String URL_BASE = testingServer ? testServer : productionServer;
+public class APIFactory {
+    public static AlcoAPI getAlcoAPIClient() {
+        RestAdapter x = new RestAdapter.Builder().setEndpoint("http://test.code-sharks.pl/alcohol/api/").setConverter(new AlcoAPIAdapter.AlcoJSONConverter()).build();
+        return x.create(AlcoAPI.class);
+    }
 }

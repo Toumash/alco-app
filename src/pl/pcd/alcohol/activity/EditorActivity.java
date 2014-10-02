@@ -27,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import pl.pcd.alcohol.Cfg;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.contract.User_Alcohol;
 import pl.pcd.alcohol.database.UserDB;
-import pl.pcd.alcohol.webapi.contract.User_Alcohol;
 
 import java.util.ArrayList;
 import java.util.List;

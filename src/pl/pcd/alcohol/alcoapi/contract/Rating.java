@@ -14,7 +14,7 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.webapi.contract;
+package pl.pcd.alcohol.alcoapi.contract;
 
 public class Rating {
     public String author;

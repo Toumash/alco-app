@@ -16,7 +16,7 @@
 
 package pl.pcd.alcohol;
 
-import pl.pcd.alcohol.webapi.APICfg;
+import pl.pcd.alcohol.alcoapi.APICfg;
 
 public class Const {
     public static final int REQUEST_CODE_ADD = 1;

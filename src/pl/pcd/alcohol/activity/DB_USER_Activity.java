@@ -36,8 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
+import pl.pcd.alcohol.alcoapi.WebLogin;
 import pl.pcd.alcohol.database.UserDB;
-import pl.pcd.alcohol.webapi.WebLogin;
 
 
 public class DB_USER_Activity extends ThemeListActivity {

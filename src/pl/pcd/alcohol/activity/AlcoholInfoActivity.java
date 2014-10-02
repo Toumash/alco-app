@@ -39,11 +39,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.AlcoholReporter;
+import pl.pcd.alcohol.alcoapi.RatingsDownloader;
+import pl.pcd.alcohol.alcoapi.WebLogin;
+import pl.pcd.alcohol.alcoapi.contract.Rating;
 import pl.pcd.alcohol.database.MainDB;
-import pl.pcd.alcohol.webapi.AlcoholReporter;
-import pl.pcd.alcohol.webapi.RatingsDownloader;
-import pl.pcd.alcohol.webapi.WebLogin;
-import pl.pcd.alcohol.webapi.contract.Rating;
 
 @SuppressWarnings("ResourceType")
 public class AlcoholInfoActivity extends ThemeActivity {

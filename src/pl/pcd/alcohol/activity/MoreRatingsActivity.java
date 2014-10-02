@@ -31,8 +31,8 @@ import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
-import pl.pcd.alcohol.webapi.RatingsDownloader;
-import pl.pcd.alcohol.webapi.contract.Rating;
+import pl.pcd.alcohol.alcoapi.RatingsDownloader;
+import pl.pcd.alcohol.alcoapi.contract.Rating;
 
 import java.util.ArrayList;
 

@@ -42,11 +42,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
+import pl.pcd.alcohol.alcoapi.AlcoholReporter;
+import pl.pcd.alcohol.alcoapi.WebLogin;
+import pl.pcd.alcohol.alcoapi.contract.Main_Alcohol;
 import pl.pcd.alcohol.database.MainDB;
 import pl.pcd.alcohol.service.UpdaterIntentService;
-import pl.pcd.alcohol.webapi.AlcoholReporter;
-import pl.pcd.alcohol.webapi.WebLogin;
-import pl.pcd.alcohol.webapi.contract.Main_Alcohol;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

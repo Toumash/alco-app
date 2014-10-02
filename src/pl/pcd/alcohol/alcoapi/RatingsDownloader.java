@@ -14,7 +14,7 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.webapi;
+package pl.pcd.alcohol.alcoapi;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -27,7 +27,7 @@ import pl.pcd.alcohol.Cfg;
 import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.JSONTransmitter;
 import pl.pcd.alcohol.Utils;
-import pl.pcd.alcohol.webapi.contract.Rating;
+import pl.pcd.alcohol.alcoapi.contract.Rating;
 
 import java.util.ArrayList;
 

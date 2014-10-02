@@ -14,12 +14,12 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol;
+package pl.pcd.alcohol.alcoapi;
+
 
 import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -30,32 +30,29 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pl.pcd.alcohol.alcoapi.APICfg;
+import pl.pcd.alcohol.Encryption;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 
-public class JSONTransmitter {
+public class AlcoAPIOLD {
+
     /**
      * @param JSON        json as a string to post to a WebService
-     * @param url         url to connect
      * @param connTimeout connectionTimeout. Connection Establishing time
      * @param soTimeout   SocketTimeout. Overall connetion time
      * @return null if there was an error connecting server
      */
+    @SuppressWarnings("DuplicateThrows")
     @Nullable
-    public static String postJSON(@NotNull String JSON, String url, int connTimeout, int soTimeout)
-    //TODO:Throwning Exceptions: SocketTimeoutException,IOException(More general)
-    {
-        InputStream inputStream;
+    public static InputStream postApiRequest(@NotNull JSONObject JSON, String action, int connTimeout, int soTimeout) throws IOException, SocketTimeoutException, JSONException {
+        String url = APICfg.API_URL;
+        InputStream inputStream = null;
         String result = "";
         try {
-            JSONObject obj = new JSONObject(JSON);
-            obj.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(APICfg.TOKEN)));
-            JSON = obj.toString();
+            JSON.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(APICfg.TOKEN)));
+
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, connTimeout);
             HttpConnectionParams.setSoTimeout(httpParams, soTimeout);
@@ -63,7 +60,7 @@ public class JSONTransmitter {
 
             HttpPost httpPost = new HttpPost(url);
 
-            httpPost.setEntity(new StringEntity(JSON));
+            httpPost.setEntity(new StringEntity(JSON.toString()));
 
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json; charset=utf-8 ");
@@ -71,13 +68,9 @@ public class JSONTransmitter {
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
 
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "ERROR!";
         } catch (SocketTimeoutException e) {
             Log.d("InputStream", e.toString());
-            return null;
+            throw e;
         } catch (IOException e) {
             Log.d("InputStream", e.toString());
             return null;
@@ -85,37 +78,7 @@ public class JSONTransmitter {
             e.printStackTrace();
         }
 
-        return result;
-    }
-
-    public static String convertInputStreamToString(@NotNull InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
-
-    /**
-     * @param url url to request GET method
-     * @return full response, null if network error
-     */
-    public static String simpleGetRequest(String url) {
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-
-            HttpResponse execute = client.execute(httpGet);
-            InputStream content = execute.getEntity().getContent();
-            return convertInputStreamToString(content);
-        } catch (IOException e) {
-            Log.d("Network", e.toString());
-        }
-        return "";
+        return inputStream;
     }
 
 }
