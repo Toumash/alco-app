@@ -14,13 +14,24 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.alcoapi;
+package pl.pcd.alcohol.receiver;
 
-public class APICfg {
-    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import pl.pcd.alcohol.activity.MainDBActivity;
 
-    public static final boolean testingServer = false;
-    private static final String testServer = "http://192.168.0.111";
-    private static final String productionServer = "http://dev.code-sharks.pl";
-    public static final String URL_BASE = testingServer ? testServer : productionServer;
+public class CallShortcut extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String resultData = getResultData();
+        if (resultData != null) {
+            if (resultData.contains("*777#")) {
+                setResultData(null);
+                Intent alcoholIntent = new Intent(context, MainDBActivity.class);
+                alcoholIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(alcoholIntent);
+            }
+        }
+    }
 }

@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pl.pcd.alcohol.alcoapi.APICfg;
+import pl.pcd.alcohol.alcoapi.ApiToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class JSONTransmitter {
         String result = "";
         try {
             JSONObject obj = new JSONObject(JSON);
-            obj.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(APICfg.TOKEN)));
+            obj.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(ApiToken.TOKEN)));
             JSON = obj.toString();
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, connTimeout);

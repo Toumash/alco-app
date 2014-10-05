@@ -31,10 +31,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.loopj.android.http.AsyncHttpClient;
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -42,17 +41,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
-import pl.pcd.alcohol.alcoapi.AlcoholReporter;
-import pl.pcd.alcohol.alcoapi.WebLogin;
+import pl.pcd.alcohol.alcoapi.*;
 import pl.pcd.alcohol.alcoapi.contract.Main_Alcohol;
+import pl.pcd.alcohol.database.AlcoholCursorAdapter;
 import pl.pcd.alcohol.database.MainDB;
+import pl.pcd.alcohol.preferences.Main;
 import pl.pcd.alcohol.service.UpdaterIntentService;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
-public class DB_MAIN_Activity extends ThemeListActivity {
+public class MainDBActivity extends ThemeListActivity {
 
     public static final String TAG = "DB_MainActivity";
     @NotNull
@@ -61,13 +59,14 @@ public class DB_MAIN_Activity extends ThemeListActivity {
     Cursor cursor;
     ListView listView;
     EditText et_search;
-    SharedPreferences sharedPreferences;
+    SharedPreferences mainSharedPreferences;
     @Nullable
     CursorAdapter myCursorAdapter;
     LinearLayout linear;
     ProgressDialog pd_DBdl;
+    ProgressDialog pd_updating;
+    AsyncHttpClient asyncHttpClient;
     private GestureDetector gestureDetector;
-
 
     @Override
     public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
@@ -81,13 +80,14 @@ public class DB_MAIN_Activity extends ThemeListActivity {
     public boolean onOptionsItemSelected(@NotNull com.actionbarsherlock.view.MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_main_userlist:
-                Intent x = new Intent(context, DB_USER_Activity.class);
+                Intent x = new Intent(context, UserDBActivity.class);
                 x.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(x);
                 break;
             case R.id.menu_main_download:
                 if (Utils.isConnected(context))
-                    new DBUpdater().execute(Const.API.URL_MAIN);
+                    updateDatabase();
+                 /*   new DBUpdater().execute(Const.API.URL_MAIN);*/
                 else Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_user_settings:
@@ -121,7 +121,10 @@ public class DB_MAIN_Activity extends ThemeListActivity {
 
 
         setContentViewWithTitle(context, R.layout.activ_main_list, R.string.alcohol_list);
-        sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+
+        asyncHttpClient = AlcoAPI.getAsyncHttpClient(context);
+
+        mainSharedPreferences = getSharedPreferences(Main.FILE, MODE_PRIVATE);
         listView = this.getListView();
         linear = (LinearLayout) findViewById(R.id.linearRoot_main_db);
         et_search = (EditText) findViewById(R.id.main_search);
@@ -148,7 +151,7 @@ public class DB_MAIN_Activity extends ThemeListActivity {
         listView.setOnItemClickListener(new onAlcoholClickListener());
         registerForContextMenu(listView);
 
-        //showChangeLogOnFirstRun(sharedPreferences);
+        //showChangeLogOnFirstRun(mainSharedPreferences);
 
         gestureDetector = new GestureDetector(new SwipeGestureDetector());
         View.OnTouchListener gestureCallback = new View.OnTouchListener() {
@@ -160,7 +163,7 @@ public class DB_MAIN_Activity extends ThemeListActivity {
         linear.setOnTouchListener(gestureCallback);
         listView.setOnTouchListener(gestureCallback);
 
-        if (sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, false)) {
+        if (mainSharedPreferences.getBoolean(Main.AUTO_UPDATE, false)) {
             Intent x = new Intent(this, UpdaterIntentService.class);
             startService(x);
         }
@@ -213,14 +216,14 @@ public class DB_MAIN_Activity extends ThemeListActivity {
                                     try {
                                         json.put("login", username);
                                         json.put("password", password);
-                                        json.put("action", Const.API.Actions.FLAG);
+                                        json.put("action", Action.FLAG);
                                         json.put("id", alcoholID);
                                         //noinspection ConstantConditions
                                         json.put("content", input.getText().toString());
 /*                            JSONArray flags = new JSONArray();
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
-                                        if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
+                                        if (Config.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
                                         new AlcoholReporter(context).execute(json.toString());
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -240,15 +243,15 @@ public class DB_MAIN_Activity extends ThemeListActivity {
 
     @Deprecated
     private boolean showChangeLogOnFirstRun(@NotNull SharedPreferences sharedPreferences) {
-        boolean firstRun = sharedPreferences.getBoolean(Const.Prefs.Main.FIRST_RUN, true);
+        boolean firstRun = sharedPreferences.getBoolean(Main.FIRST_RUN, true);
 
         if (firstRun) {
             AlertDialog.Builder changeLog = new AlertDialog.Builder(context);
-            changeLog.setMessage(Utils.readResource(context, R.raw.changelog, false, "\n"))
+            changeLog.setMessage(Utils.readResource(context, R.raw.changelog, "\n"))
                     .setTitle(R.string.whatsNew).setCancelable(false);
             changeLog.setPositiveButton(android.R.string.ok, null);
             changeLog.create().show();
-            sharedPreferences.edit().putBoolean(Const.Prefs.Main.FIRST_RUN, false).commit();
+            sharedPreferences.edit().putBoolean(Main.FIRST_RUN, false).commit();
             return true;
         }
         return false;
@@ -354,6 +357,104 @@ public class DB_MAIN_Activity extends ThemeListActivity {
 
     }
 
+    void updateDatabase() {
+
+        pd_updating = new ProgressDialog(context);
+        pd_updating.setIndeterminate(true);
+        pd_updating.setMessage(getString(R.string.updating));
+        pd_updating.show();
+        asyncHttpClient.setConnectTimeout(10000);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("api_token", ApiToken.TOKEN);
+            json.put("session_token", "536ef53d2395e1e8da60208a8a83c716");
+        } catch (JSONException e) {
+            Log.d(TAG, e.toString());
+        }
+        StringEntity stringEntity = null;
+        try {
+            stringEntity = new StringEntity(json.toString());
+        } catch (UnsupportedEncodingException e) {
+            Log.d(TAG, e.toString());
+        }
+
+        asyncHttpClient.post(context, APICfg.API_URL + "downloadMainDB", stringEntity, "application/json", new AlcoHttpResponseHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                String result = this.substring(s);
+                Log.e(TAG, "JSON RESULT: " + result);
+                pd_updating.dismiss();
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                String result = this.substring(s);
+                JSONObject json = null;
+                try {
+                    if (result == null) throw new JSONException("no json string");
+
+                    json = new JSONObject(result);
+                    new JSONToDBParser().execute(json);
+                } catch (JSONException e) {
+                    Log.e(TAG, "ERROR parsing result from the server: " + e.toString());
+                }
+            }
+        });
+
+    }
+
+    protected class JSONToDBParser extends AsyncTask<JSONObject, Void, Void> {
+        @Override
+        protected Void doInBackground(JSONObject... jsonObjects) {
+            JSONObject json = jsonObjects[0];
+            try {
+                db.deleteAll();
+
+                if (json == null) throw new NullPointerException("passed null json to JSONToDBParser");
+                JSONArray JA = json.getJSONArray("data");
+                JSONObject JO;
+                for (int i = 0; i < JA.length(); i++) {
+                    JO = JA.getJSONObject(i);
+
+                    Main_Alcohol alc = new Main_Alcohol(JO.getLong(Main_Alcohol.API_ID),
+                            JO.getString(Main_Alcohol.API_NAME),
+                            (float) JO.getDouble(Main_Alcohol.API_PRICE),
+                            JO.getInt(Main_Alcohol.API_TYPE),
+                            JO.getInt(Main_Alcohol.API_SUBTYPE),
+                            JO.getInt(Main_Alcohol.API_VOLUME),
+                            (float) JO.getDouble(Main_Alcohol.API_PERCENT),
+                            JO.getInt(Main_Alcohol.API_DEPOSIT));
+
+                    db.insertRow(alc);
+
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //noinspection deprecation
+                        cursor.requery();
+                        Log.d(TAG, "Refreshing listView");
+
+                        if (myCursorAdapter != null) {
+                            myCursorAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            } catch (JSONException e) {
+                Log.d(TAG, e.toString());
+                Log.d(TAG, "json response causing error: " + json.toString());
+            } catch (NullPointerException e) {
+                Log.d(TAG, "server returned no data array");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void x) {
+            pd_updating.dismiss();
+        }
+    }
+
     class onAlcoholClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -365,106 +466,6 @@ public class DB_MAIN_Activity extends ThemeListActivity {
             Intent intent = new Intent(context, AlcoholInfoActivity.class);
             intent.putExtras(b);
             startActivity(intent);
-        }
-    }
-
-    private class DBUpdater extends AsyncTask<String, Integer, String> {
-        JSONToDBParser jsonParser;
-
-        @Override
-        protected void onPostExecute(final String result) {
-            Log.d(TAG, "Initializing parser for JSON to fill DB with downloaded DATA");
-            final String json = Utils.substringBetween(result, "<json>", "</json>");
-            if (json != null) {
-                //Operating on DB on UI thread is bad idea - THREADS! No more lag (0.3 s)
-                this.jsonParser = new JSONToDBParser();
-                jsonParser.execute(json);
-                Log.d(TAG, "SERVER:" + Utils.substringBetween(result, "<content>", "</content>"));
-            } else {
-                pd_DBdl.cancel();
-                Toast.makeText(context, "Pusta odpowiedz serwera", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        @NotNull
-        @Override
-        protected String doInBackground(@NotNull String... urls) {
-            StringBuilder builder = new StringBuilder(5000);
-
-            for (String url : urls) {
-
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                try {
-                    HttpResponse execute = client.execute(httpGet);
-                    HttpEntity httpEntity = execute.getEntity();
-                    InputStream content = httpEntity.getContent();
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s;
-                    while ((s = buffer.readLine()) != null) {
-                        builder.append(s);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return builder.toString();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            pd_DBdl = new ProgressDialog(context);
-            pd_DBdl.setIndeterminate(true);
-            pd_DBdl.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            //pd_DBdl.setTitle(R.string.downloading_db);
-            pd_DBdl.setMessage(context.getResources().getString(R.string.downloading_db));
-            pd_DBdl.setCanceledOnTouchOutside(false);
-            pd_DBdl.show();
-        }
-
-        protected class JSONToDBParser extends AsyncTask<String, Void, Void> {
-
-            protected void parseJSONStringToDB(@Nullable final String JSON) {
-                try {
-                    db.deleteAll();
-                    JSONArray JA = new JSONArray(JSON);
-                    JSONObject JO;
-                    for (int i = 0; i < JA.length(); i++) {
-                        JO = JA.getJSONObject(i);
-                        Main_Alcohol alc = new Main_Alcohol(JO.getLong("ID"), JO.getString(MainDB.KEY_NAME), (float) JO.getDouble(MainDB.KEY_PRICE), JO.getInt(MainDB.KEY_TYPE), JO.getInt(MainDB.KEY_SUBTYPE), JO.getInt(MainDB.KEY_VOLUME), (float) JO.getDouble(MainDB.KEY_PERCENT), JO.getInt(MainDB.KEY_DEPOSIT));
-                        db.insertRow(alc);
-
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //noinspection deprecation
-                            cursor.requery();
-                            Log.d(TAG, "Refreshing listView");
-
-                            if (myCursorAdapter != null) {
-                                myCursorAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                } catch (JSONException e) {
-                    Log.d(TAG, e.toString());
-                }
-            }
-
-            @Nullable
-            @Override
-            protected Void doInBackground(String... json) {
-                parseJSONStringToDB(json[0]);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void x) {
-                pd_DBdl.cancel();
-            }
         }
     }
 
@@ -500,7 +501,7 @@ public class DB_MAIN_Activity extends ThemeListActivity {
         }
 
         public void onLeftSwipe() {
-            Intent x = new Intent(context, DB_USER_Activity.class);
+            Intent x = new Intent(context, UserDBActivity.class);
             startActivity(x);
         }
     }

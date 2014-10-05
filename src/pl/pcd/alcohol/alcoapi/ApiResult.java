@@ -16,11 +16,9 @@
 
 package pl.pcd.alcohol.alcoapi;
 
-public class APICfg {
-    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
-
-    public static final boolean testingServer = false;
-    private static final String testServer = "http://192.168.0.111";
-    private static final String productionServer = "http://dev.code-sharks.pl";
-    public static final String URL_BASE = testingServer ? testServer : productionServer;
+public final class ApiResult {
+    public static final String OK = "ok";
+    public static final String LOGIN_PASSWORD = "login_password";
+    public static final String ERROR = "error";
+    public static final String ACTIVATION = "activation";
 }

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pl.pcd.alcohol.Cfg;
+import pl.pcd.alcohol.Config;
 import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.JSONTransmitter;
 import pl.pcd.alcohol.Utils;
@@ -50,7 +50,7 @@ public class RatingsDownloader extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         JSONObject json = new JSONObject();
         try {
-            json.put("action", Const.API.Actions.FETCH_RATINGS);
+            json.put("action", Action.FETCH_RATINGS);
             json.put("alcohol_id", this.alcoholId);
             json.put("count", this.limit);
         } catch (JSONException e) {
@@ -59,7 +59,7 @@ public class RatingsDownloader extends AsyncTask<Void, Void, Void> {
 
         String received = JSONTransmitter.postJSON(json.toString(), Const.API.URL_JSON, 7000, 10000);
         String receivedJSONtext = Utils.substringBetween(received, "<json>", "</json>");
-        if (Cfg.DEBUG) Log.d(TAG, "response:" + receivedJSONtext);
+        if (Config.DEBUG) Log.d(TAG, "response:" + receivedJSONtext);
         if (receivedJSONtext != null) {
             parseJSON(receivedJSONtext);
         } else if (received == null) {
@@ -72,7 +72,7 @@ public class RatingsDownloader extends AsyncTask<Void, Void, Void> {
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
             this.result = jsonObject.getString("result");
-            if (jsonObject.getString("result").equals(Const.API.LoginResult.OK)) {
+            if (jsonObject.getString("result").equals(ApiResult.OK)) {
 
                 JSONArray comments = jsonObject.getJSONArray("data");
                 ratingList = new ArrayList<Rating>();

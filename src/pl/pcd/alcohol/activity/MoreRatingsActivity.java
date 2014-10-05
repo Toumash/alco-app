@@ -27,10 +27,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.ApiResult;
 import pl.pcd.alcohol.alcoapi.RatingsDownloader;
 import pl.pcd.alcohol.alcoapi.contract.Rating;
 
@@ -77,7 +77,7 @@ public class MoreRatingsActivity extends ThemeActivity {
                 @Override
                 protected void onPostExecute(Void x) {
                     super.onPostExecute(x);
-                    if (this.result.equals(Const.API.LoginResult.OK)) {
+                    if (this.result.equals(ApiResult.OK)) {
                         linear_for_info.removeAllViews();
                         lv_ratings.setAdapter(new RatingsAdapter(context, ratingList));
                     } else if (this.result.equals("timeout")) {

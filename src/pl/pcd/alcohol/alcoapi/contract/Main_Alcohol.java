@@ -17,6 +17,16 @@
 package pl.pcd.alcohol.alcoapi.contract;
 
 public class Main_Alcohol {
+    public static final String API_NAME = "n";
+    public static final String API_ID = "id";
+    public static final String API_VOLUME = "vol";
+    public static final String API_TYPE = "t";
+    public static final String API_SUBTYPE = "st";
+    public static final String API_PRICE = "cost";
+    public static final String API_DEPOSIT = "depo";
+    public static final String API_PERCENT = "pct";
+
+
     private long _id;
     private String _name;
     private float _price;

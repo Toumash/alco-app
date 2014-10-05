@@ -39,11 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
-import pl.pcd.alcohol.alcoapi.AlcoholReporter;
-import pl.pcd.alcohol.alcoapi.RatingsDownloader;
-import pl.pcd.alcohol.alcoapi.WebLogin;
+import pl.pcd.alcohol.alcoapi.*;
 import pl.pcd.alcohol.alcoapi.contract.Rating;
 import pl.pcd.alcohol.database.MainDB;
+import pl.pcd.alcohol.preferences.Main;
 
 @SuppressWarnings("ResourceType")
 public class AlcoholInfoActivity extends ThemeActivity {
@@ -90,7 +89,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
         super.onCreate(savedInstanceState);
         setContentViewWithTitle(context, R.layout.activ_alcohol_info, R.string.info);
 
-        sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Main.FILE, MODE_PRIVATE);
 
         et_name = (TextView) findViewById(R.id.alcoholinfo_et_name);
         et_price = (TextView) findViewById(R.id.alcoholinfo_et_price);
@@ -128,7 +127,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
 
         if (xtr != null) {
             fillFieldsFromDB(xtr.getLong("id"));
-            if (sharedPreferences.getBoolean(Const.Prefs.Main.COMMENTS_AUTO_REFRESH, true)) {
+            if (sharedPreferences.getBoolean(Main.COMMENTS_AUTO_REFRESH, true)) {
                 handleFetchingRatings();
             } else {
                 if (findViewById(INFO_VIEW_ID) != null)
@@ -164,7 +163,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
                 @Override
                 protected void onPostExecute(Void x) {
                     super.onPostExecute(x);
-                    if (this.result.equals(Const.API.LoginResult.OK)) {
+                    if (this.result.equals(ApiResult.OK)) {
                         linear_for_ratings.removeAllViews();
                         LayoutInflater vi =
                                 (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -229,8 +228,8 @@ public class AlcoholInfoActivity extends ThemeActivity {
         /*  Do not remove this if statement, I donnt know why, but without it theres exception thrown
             That is strange since db.getRow(long) already moves Cursor c to first position */
         if (c.moveToFirst()) {
-            if (Cfg.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
-            if (Cfg.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
+            if (Config.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
+            if (Config.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
             alcoholId = c.getLong(c.getColumnIndexOrThrow(MainDB.KEY_ID_ALC));
             et_name.setText(c.getString(c.getColumnIndexOrThrow(MainDB.KEY_NAME)));
             et_price.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(MainDB.KEY_PRICE)) + "zł"));
@@ -318,14 +317,14 @@ public class AlcoholInfoActivity extends ThemeActivity {
                             try {
                                 json.put("login", username);
                                 json.put("password", password);
-                                json.put("action", Const.API.Actions.FLAG);
+                                json.put("action", Action.FLAG);
                                 json.put("id", alcoholId);
                                 //noinspection ConstantConditions
                                 json.put("content", input.getText().toString());
 /*                            JSONArray flags = new JSONArray();
                     flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
                     json.put("flag",flags);*/
-                                if (Cfg.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
+                                if (Config.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
                                 new AlcoholReporter(context).execute(json.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -367,7 +366,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
                             JSONObject json = new JSONObject();
 
                             try {
-                                json.put("action", Const.API.Actions.RATE);
+                                json.put("action", Action.RATE);
                                 json.put("login", login);
                                 json.put("password", password);
                                 json.put("id", alcoholId);
@@ -400,7 +399,7 @@ public class AlcoholInfoActivity extends ThemeActivity {
                                     super.onPostExecute(s);
                                     progressDialog.cancel();
                                     if (s != null) {
-                                        if (Cfg.DEBUG) Log.d(TAG, s);
+                                        if (Config.DEBUG) Log.d(TAG, s);
                                         String result = Utils.substringBetween(s, "<json>", "</json>");
                                         JSONObject jsonObject;
                                         try {

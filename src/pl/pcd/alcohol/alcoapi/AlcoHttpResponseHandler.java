@@ -16,11 +16,24 @@
 
 package pl.pcd.alcohol.alcoapi;
 
-public class APICfg {
-    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
+import com.loopj.android.http.TextHttpResponseHandler;
+import org.apache.http.Header;
+import pl.pcd.alcohol.Utils;
 
-    public static final boolean testingServer = false;
-    private static final String testServer = "http://192.168.0.111";
-    private static final String productionServer = "http://dev.code-sharks.pl";
-    public static final String URL_BASE = testingServer ? testServer : productionServer;
+public abstract class AlcoHttpResponseHandler extends TextHttpResponseHandler {
+    /**
+     * Always use substring
+     */
+    @Override
+    public abstract void onFailure(int i, Header[] headers, String s, Throwable throwable);
+
+    /**
+     * Always use substring
+     */
+    @Override
+    public abstract void onSuccess(int i, Header[] headers, String s);
+
+    protected String substring(String s) {
+        return Utils.substringBetween(s, "<json>", "</json>");
+    }
 }

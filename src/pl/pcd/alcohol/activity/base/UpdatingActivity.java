@@ -34,6 +34,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.alcoapi.Action;
+import pl.pcd.alcohol.preferences.Main;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,36 +50,36 @@ public class UpdatingActivity extends ThemeListActivity {
     @Override
     protected void onCreate(Bundle x) {
         super.onCreate(x);
-        final SharedPreferences sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+        final SharedPreferences sharedPreferences = getSharedPreferences(Main.FILE, MODE_PRIVATE);
 
         if (Utils.isConnected(getApplicationContext())) {
 
-            if (Cfg.DEBUG)
-                Log.d("Updater", sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true) ? "AutoUpdater < ON >" : "AutoUpdater < OFF >");
-            if (sharedPreferences.getBoolean(Const.Prefs.Main.AUTO_UPDATE, true)) {
+            if (Config.DEBUG)
+                Log.d("Updater", sharedPreferences.getBoolean(Main.AUTO_UPDATE, true) ? "AutoUpdater < ON >" : "AutoUpdater < OFF >");
+            if (sharedPreferences.getBoolean(Main.AUTO_UPDATE, true)) {
                 Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 long date = Long.valueOf(year + "" + "" + month + "" + day + "" + hour);
-                if (sharedPreferences.getLong(Const.Prefs.Main.LAST_UPDATE_CHECK, 000) < date) {
-                    if (Cfg.DEBUG) Log.i("Updater", "Checking for updates");
+                if (sharedPreferences.getLong(Main.LAST_UPDATE_CHECK, 000) < date) {
+                    if (Config.DEBUG) Log.i("Updater", "Checking for updates");
                     new UpdateChecker(UpdatingActivity.this, date).execute();
 
                 } else {
-                    if (Cfg.DEBUG) Log.i("Updater", "Update is not necessary");
+                    if (Config.DEBUG) Log.i("Updater", "Update is not necessary");
                 }
             }
         } else {
-            if (Cfg.DEBUG) Log.d("Updater", "Not connected");
+            if (Config.DEBUG) Log.d("Updater", "Not connected");
         }
 
-        if (!sharedPreferences.getBoolean(Const.Prefs.Main.INSTALLATION_REGISTERED, false)) {
+        if (!sharedPreferences.getBoolean(Main.INSTALLATION_REGISTERED, false)) {
             String id = Installation.id(getApplicationContext());
             JSONObject object = new JSONObject();
             try {
-                object.put("action", Const.API.Actions.REGISTER_INSTALLATION);
+                object.put("action", Action.REGISTER_INSTALLATION);
                 object.put("id", id);
             } catch (JSONException e) {
                 Log.d("Installation", e.toString());
@@ -101,7 +103,7 @@ public class UpdatingActivity extends ThemeListActivity {
                             if (obj.getString("result").equals("ok")) {
                                 Log.d("Installation", "Install Reg: < OK >");
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean(Const.Prefs.Main.INSTALLATION_REGISTERED, true);
+                                editor.putBoolean(Main.INSTALLATION_REGISTERED, true);
                                 editor.commit();
                             } else {
                                 Log.d("Installation", "Install Reg : < ERROR >");
@@ -126,7 +128,7 @@ public class UpdatingActivity extends ThemeListActivity {
 
         public Updater(@NotNull Context context) {
             this.context = context;
-            this.sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+            this.sharedPreferences = context.getSharedPreferences(Main.FILE, MODE_PRIVATE);
             this.progressDialog = new ProgressDialog(context);
             {
                 this.progressDialog.setIndeterminate(false);
@@ -186,7 +188,7 @@ public class UpdatingActivity extends ThemeListActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
                 context.startActivity(intent);*/
-                sharedPreferences.edit().putBoolean(Const.Prefs.Main.FIRST_RUN, true).commit();
+                sharedPreferences.edit().putBoolean(Main.FIRST_RUN, true).commit();
             } catch (IOException e) {
                 Log.d("Updater", e.toString());
                 error = new Runnable() {
@@ -228,7 +230,7 @@ public class UpdatingActivity extends ThemeListActivity {
         public UpdateChecker(@NotNull Context context, long date) {
             super();
             this.ctx = context;
-            sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(Main.FILE, MODE_PRIVATE);
             this.date = date;
         }
 
@@ -242,7 +244,7 @@ public class UpdatingActivity extends ThemeListActivity {
                 alert.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (Cfg.DEBUG) Log.d("Updater", "firing update");
+                        if (Config.DEBUG) Log.d("Updater", "firing update");
                         new Updater(ctx).execute();
                     }
                 });
@@ -273,7 +275,7 @@ public class UpdatingActivity extends ThemeListActivity {
             try {
                 JSONObject json = new JSONObject(JSONTransmitter.simpleGetRequest(Const.API.URL_VERSION));
                 this.description = json.getString("info");
-                sharedPreferences.edit().putLong(Const.Prefs.Main.LAST_UPDATE_CHECK, this.date).commit();
+                sharedPreferences.edit().putLong(Main.LAST_UPDATE_CHECK, this.date).commit();
                 return json.getInt("version") > currentVersion;
             } catch (JSONException e) {
                 Log.e("Updater", e.toString());

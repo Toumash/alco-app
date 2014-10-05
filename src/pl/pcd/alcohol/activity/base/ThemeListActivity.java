@@ -20,8 +20,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.actionbarsherlock.app.SherlockListActivity;
 import org.jetbrains.annotations.NotNull;
-import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
+import pl.pcd.alcohol.preferences.Main;
 
 public class ThemeListActivity extends SherlockListActivity {
 
@@ -29,7 +29,7 @@ public class ThemeListActivity extends SherlockListActivity {
      * Sets the activity style to black one when there's a true bool sharedPreference called hacker_style in Prefs.Main.FILE
      */
     public static void setThemeToHackerStyle(@NotNull Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Main.FILE, MODE_PRIVATE);
         if (sharedPreferences.getBoolean("hacker_style", false)) {
             context.setTheme(R.style.HackerStyle);
         }

@@ -31,6 +31,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.preferences.Main;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -87,7 +88,7 @@ public class UpdaterDialog extends Activity {
         builder.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (Cfg.DEBUG) Log.d("Updater", "firing update");
+                if (Config.DEBUG) Log.d("Updater", "firing update");
                 if (Utils.isConnected(context)) {
                     new Updater(context) {
                         @Override
@@ -123,7 +124,7 @@ public class UpdaterDialog extends Activity {
 
         public Updater(@NotNull Context context) {
             this.context = context;
-            this.sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);  //FIRST RUN
+            this.sharedPreferences = context.getSharedPreferences(Main.FILE, MODE_PRIVATE);  //FIRST RUN
             this.progressDialog = new ProgressDialog(context);
             {
                 this.progressDialog.setIndeterminate(false);
@@ -187,7 +188,7 @@ public class UpdaterDialog extends Activity {
 
                 //noinspection AutoBoxing
                 publishProgress(100);
-                sharedPreferences.edit().putBoolean(Const.Prefs.Main.FIRST_RUN, true).commit();
+                sharedPreferences.edit().putBoolean(Main.FIRST_RUN, true).commit();
 
                 return R_OK;
             } catch (IOException e) {

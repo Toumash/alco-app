@@ -17,7 +17,6 @@
 package pl.pcd.alcohol.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,18 +26,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+import com.loopj.android.http.AsyncHttpClient;
+import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
-import pl.pcd.alcohol.alcoapi.APIFactory;
 import pl.pcd.alcohol.alcoapi.AlcoAPI;
-import pl.pcd.alcohol.alcoapi.AlcoAPIAdapter.TypedJsonString;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import pl.pcd.alcohol.alcoapi.AlcoHttpResponseHandler;
+import pl.pcd.alcohol.alcoapi.ApiToken;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Tomasz on 2014-08-19.
@@ -47,34 +48,50 @@ public class AboutActivity extends ThemeActivity {
     Button bt_license;
     ImageView iv_app;
     Context context = this;
+    AsyncHttpClient asyncHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        {
-            final AlcoAPI api = APIFactory.getAlcoAPIClient();
-            if (Utils.isConnected(context)) {
-                final ProgressDialog pd = new ProgressDialog(context);
-                pd.setIndeterminate(true);
-                pd.setMessage("Waiting for server resonse...");
-                pd.show();
-                api.getAllAlcohols(new TypedJsonString("{\"x\":\"s\"}"), new Callback<JSONObject>() {
+        asyncHttpClient = AlcoAPI.getAsyncHttpClient(context);
+
+        if (Utils.isConnected(context)) {
+            Log.d("TAG", "Executing requests");
+
+
+            JSONObject json = new JSONObject();
+            try {
+                json.put("api_token", ApiToken.TOKEN);
+                json.put("login", "toumash");
+                json.put("password", "xpenetrator4000");
+            } catch (JSONException e) {
+                Log.d("JSON", e.toString());
+            }
+
+            try {
+                StringEntity entity = new StringEntity(json.toString());
+                asyncHttpClient.post(context, "http://test.code-sharks.pl/alcohol/api/login", entity, "application/json", new AlcoHttpResponseHandler() {
                     @Override
-                    public void success(JSONObject string, Response response) {
-                        pd.dismiss();
-                        Log.d("xd", string.toString());
+                    public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                        Log.d("TAG", "Fail");
+                        Log.d("TAG", "body:" + s);
                     }
 
                     @Override
-                    public void failure(RetrofitError retrofitError) {
-                        pd.dismiss();
-                        Log.d("xd", "ERROR!!!!!!!!" + retrofitError.toString());
+                    public void onSuccess(int i, Header[] headers, String s) {
+
+                        Log.d("TAG", "Success");
+                        Log.d("TAG", "body:" + s);
                     }
                 });
-            } else {
-                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+        } else {
+            Log.d("TAG", "No internet connection");
         }
+
+
         setContentView(R.layout.activ_about);
         bt_license = (Button) findViewById(R.id.about_bt_license);
         iv_app = (ImageView) findViewById(R.id.about_iv_app);
@@ -82,12 +99,12 @@ public class AboutActivity extends ThemeActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(Utils.readResource(context, R.raw.notice, false, "\n"));
+                builder.setMessage(Utils.readResource(context, R.raw.notice, "\n"));
                 builder.setNeutralButton(R.string.apache_license, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-                        builder1.setMessage(Utils.readResource(context, R.raw.license, false, "\n"));
+                        builder1.setMessage(Utils.readResource(context, R.raw.license, "\n"));
                         builder1.show();
                     }
                 });

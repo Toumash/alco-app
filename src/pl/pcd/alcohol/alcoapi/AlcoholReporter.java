@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
-import pl.pcd.alcohol.activity.DB_MAIN_Activity;
+import pl.pcd.alcohol.activity.MainDBActivity;
 
 public class AlcoholReporter extends AsyncTask<String, Void, String> {
 
@@ -58,11 +58,11 @@ public class AlcoholReporter extends AsyncTask<String, Void, String> {
     protected void onPostExecute(@Nullable String x) {
         String json = Utils.substringBetween(x, "<json>", "</json>");
         if (x != null)
-            if (Cfg.DEBUG) Log.i(DB_MAIN_Activity.TAG, json);
+            if (Config.DEBUG) Log.i(MainDBActivity.TAG, json);
         this.progressDialog.dismiss();
         try {
             JSONObject jsonObject = new JSONObject(json);
-            if (jsonObject.getString("result").equals(Const.API.LoginResult.OK)) {
+            if (jsonObject.getString("result").equals(ApiResult.OK)) {
                 Toast.makeText(context, android.R.string.ok, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();

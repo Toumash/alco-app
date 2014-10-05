@@ -14,7 +14,7 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol;
+package pl.pcd.alcohol.database;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.database.MainDB;
+import pl.pcd.alcohol.R;
 
 
 public abstract class AlcoholCursorAdapter extends CursorAdapter {

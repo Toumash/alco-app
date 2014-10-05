@@ -34,6 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.Action;
+import pl.pcd.alcohol.alcoapi.ApiResult;
+import pl.pcd.alcohol.preferences.WebApi;
 
 
 public class LoginActivity extends ThemeActivity {
@@ -93,20 +96,20 @@ public class LoginActivity extends ThemeActivity {
         et_username = (EditText) findViewById(R.id.login_et_username);
         et_password = (EditText) findViewById(R.id.login_et_password);
 
-        sharedPreferences = context.getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(WebApi.FILE, MODE_PRIVATE);
 
         bt_ok.setOnClickListener(bt_ok_onClickListener);
         bt_register.setOnClickListener(bt_register_onClickListener);
-        if (sharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false)) {
-            et_username.setText(sharedPreferences.getString(Const.Prefs.WEB_API.LOGIN, ""));
-            et_password.setText(Encryption.decodeBase64(sharedPreferences.getString(Const.Prefs.WEB_API.PASSWORD, "")));
+        if (sharedPreferences.getBoolean(WebApi.LOGGED, false)) {
+            et_username.setText(sharedPreferences.getString(WebApi.LOGIN, ""));
+            et_password.setText(Encryption.decodeBase64(sharedPreferences.getString(WebApi.PASSWORD, "")));
         }
     }
 
     protected void loginToServer(String username, @NotNull String password) {
         JSONObject data = new JSONObject();
         try {
-            data.put("action", Const.API.Actions.LOGIN);
+            data.put("action", Action.LOGIN);
             //on web server everything is login, not username
             data.put("login", username);
             data.put("password", password);
@@ -132,7 +135,7 @@ public class LoginActivity extends ThemeActivity {
         @Nullable
         @Override
         protected String doInBackground(String... strings) {
-            if (Cfg.DEBUG) Log.i(TAG, "sent:" + strings[0]);
+            if (Config.DEBUG) Log.i(TAG, "sent:" + strings[0]);
             return JSONTransmitter.postJSON(strings[0], Const.API.URL_JSON, 7000, 10000);
         }
 
@@ -147,11 +150,11 @@ public class LoginActivity extends ThemeActivity {
                         //Toast.makeText(context, "RESULT:" + code, Toast.LENGTH_LONG).show();
                         Log.i(TAG, "Json post result: " + json.toString());
 
-                        if (code.equals(Const.API.LoginResult.OK)) {
+                        if (code.equals(ApiResult.OK)) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(Const.Prefs.WEB_API.LOGIN, username);
-                            editor.putString(Const.Prefs.WEB_API.PASSWORD, Encryption.encodeBase64(password));
-                            editor.putBoolean(Const.Prefs.WEB_API.LOGGED, true);
+                            editor.putString(WebApi.LOGIN, username);
+                            editor.putString(WebApi.PASSWORD, Encryption.encodeBase64(password));
+                            editor.putBoolean(WebApi.LOGGED, true);
                             editor.commit();
                         }
 
@@ -159,14 +162,14 @@ public class LoginActivity extends ThemeActivity {
 
                         String alert_content = "";
 
-                        if (code.equals(Const.API.LoginResult.OK)) {
+                        if (code.equals(ApiResult.OK)) {
                             alert_content = getString(R.string.login_successful);
                             isLogged = true;
-                        } else if (code.equals(Const.API.LoginResult.LOGIN_PASSWORD))
+                        } else if (code.equals(ApiResult.LOGIN_PASSWORD))
                             alert_content = getString(R.string.login_invalid_data);
-                        else if (code.equals(Const.API.LoginResult.ERROR))
+                        else if (code.equals(ApiResult.ERROR))
                             alert_content = getString(R.string.error);
-                        else if (code.equals(Const.API.LoginResult.ACTIVATION))
+                        else if (code.equals(ApiResult.ACTIVATION))
                             alert_content = getString(R.string.activate_your_accout);
 
                         if (isLogged) {
@@ -182,12 +185,12 @@ public class LoginActivity extends ThemeActivity {
                         }
                     } catch (JSONException e) {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
-                        if (Cfg.DEBUG) Log.e(TAG, e.toString());
+                        if (Config.DEBUG) Log.e(TAG, e.toString());
                     }
                 } else {
                     Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
                 }
-                if (Cfg.DEBUG) Log.i(TAG, "Whole response:" + r);
+                if (Config.DEBUG) Log.i(TAG, "Whole response:" + r);
             } else {
                 Toast.makeText(context, R.string.network_error, Toast.LENGTH_LONG).show();
             }

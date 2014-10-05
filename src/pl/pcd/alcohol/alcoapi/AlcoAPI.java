@@ -16,15 +16,17 @@
 
 package pl.pcd.alcohol.alcoapi;
 
-import org.json.JSONObject;
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.POST;
+import android.content.Context;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.PersistentCookieStore;
 
-/**
- * Created by Tomasz on 2014-09-23.
- */
-public interface AlcoAPI {
-    @POST("/downloadMainDB")
-    void getAllAlcohols(@Body AlcoAPIAdapter.TypedJsonString jsonString, Callback<JSONObject> callbackk);
+public class AlcoAPI {
+    static public AsyncHttpClient getAsyncHttpClient(Context context) {
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+
+        PersistentCookieStore loopjCookieStore = new PersistentCookieStore(context);
+        asyncHttpClient.setCookieStore(loopjCookieStore);
+
+        return asyncHttpClient;
+    }
 }

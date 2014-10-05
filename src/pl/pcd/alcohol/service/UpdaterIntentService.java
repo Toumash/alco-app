@@ -31,7 +31,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.alcoapi.Action;
 import pl.pcd.alcohol.dialog.UpdaterDialog;
+import pl.pcd.alcohol.preferences.Main;
 
 public class UpdaterIntentService extends IntentService {
 
@@ -55,7 +57,7 @@ public class UpdaterIntentService extends IntentService {
             updateChecker = new UpdateChecker(context);
             updateChecker.execute();
         } else {
-            if (Cfg.DEBUG) Log.d("Updater", "No internet connecion");
+            if (Config.DEBUG) Log.d("Updater", "No internet connecion");
         }
     }
 
@@ -82,13 +84,13 @@ public class UpdaterIntentService extends IntentService {
         public UpdateChecker(@NotNull Context context) {
             super();
             this.ctx = context;
-            sharedPreferences = context.getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(Main.FILE, MODE_PRIVATE);
         }
 
         @Override
         protected Void doInBackground(Void... integers) {
             if (isUpdateAvailable()) {
-                if (Cfg.DEBUG)
+                if (Config.DEBUG)
                     Log.d("Updater", "Update Available, firing Notification");
                 showUpdateNotification(this.description);
             } else {
@@ -111,18 +113,21 @@ public class UpdaterIntentService extends IntentService {
                 // String response  = JSONTransmitter.simpleGetRequest(Const.API.URL_VERSION);
                 JSONObject rQ = new JSONObject();
                 rQ.put("id", Installation.id(context));
-                rQ.put("action", Const.API.Actions.UPDATE);
+                rQ.put("action", Action.UPDATE);
 
                 String response = JSONTransmitter.postJSON(rQ.toString(), Const.API.URL_JSON, 10000, 15000);
-                if (Cfg.DEBUG) Log.d("Updater", "api whole response:" + response);
+                if (Config.DEBUG) Log.d("Updater", "api whole response:" + response);
                 response = Utils.substringBetween(response, "<json>", "</json>");
+
+                if (response == null) {
+                    throw new JSONException("null server response");
+                }
                 JSONObject json = new JSONObject(response);
                 this.description = json.getString("info");
                 // sharedPreferences.edit().putLong(Const.Prefs.Main.LAST_UPDATE_CHECK, this.date).commit();
 
-
                 //noinspection PointlessBooleanExpression,ConstantConditions
-                return Cfg.DEBUG || json.getInt("version") > currentVersion;
+                return Config.DEBUG || json.getInt("version") > currentVersion;
             } catch (JSONException e) {
                 Log.e("Updater", e.toString());
             }

@@ -35,6 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.Action;
+import pl.pcd.alcohol.alcoapi.ApiResult;
+import pl.pcd.alcohol.preferences.WebApi;
 
 public class RegisterActivity extends ThemeActivity {
     @NotNull
@@ -78,7 +81,7 @@ public class RegisterActivity extends ThemeActivity {
         et_email = (EditText) findViewById(R.id.register_et_email);
         et_password = (EditText) findViewById(R.id.register_et_password);
 
-        sharedPreferences = context.getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(WebApi.FILE, MODE_PRIVATE);
 
         bt_ok.setOnClickListener(bt_ok_onClickListener);
     }
@@ -94,7 +97,7 @@ public class RegisterActivity extends ThemeActivity {
     protected void register(String login, String email, String password) {
         JSONObject data = new JSONObject();
         try {
-            data.put("action", Const.API.Actions.REGISTER);
+            data.put("action", Action.REGISTER);
             data.put("login", login);
             data.put("email", email);
             data.put("password", password);
@@ -134,11 +137,11 @@ public class RegisterActivity extends ThemeActivity {
                         //Toast.makeText(context, "RESULT:" + code, Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Json post result: " + json.toString());
 
-                        if (code.equals(Const.API.LoginResult.OK)) {
+                        if (code.equals(ApiResult.OK)) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(Const.Prefs.WEB_API.LOGIN, username);
-                            editor.putString(Const.Prefs.WEB_API.EMAIL, email);
-                            editor.putString(Const.Prefs.WEB_API.PASSWORD, Encryption.encodeBase64(password));
+                            editor.putString(WebApi.LOGIN, username);
+                            editor.putString(WebApi.EMAIL, email);
+                            editor.putString(WebApi.PASSWORD, Encryption.encodeBase64(password));
                             editor.commit();
                         }
 
@@ -146,10 +149,10 @@ public class RegisterActivity extends ThemeActivity {
 
                         String alert_content = "";
 
-                        if (code.equals(Const.API.LoginResult.OK)) {
+                        if (code.equals(ApiResult.OK)) {
                             alert_content = getString(R.string.registration_successfull);
                             isLogged = true;
-                        } else if (code.equals(Const.API.LoginResult.LOGIN_PASSWORD)) {
+                        } else if (code.equals(ApiResult.LOGIN_PASSWORD)) {
                             alert_content = getString(R.string.login_invalid_data);
                         } else/* if (code.equals(Const.API.LoginResult.ERROR)) */ {
                             alert_content = getString(R.string.error);

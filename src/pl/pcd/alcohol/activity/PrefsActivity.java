@@ -32,11 +32,12 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.pcd.alcohol.Const;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
 import pl.pcd.alcohol.dialog.UpdaterDialog;
+import pl.pcd.alcohol.preferences.Main;
+import pl.pcd.alcohol.preferences.WebApi;
 
 public class PrefsActivity extends SherlockPreferenceActivity {
 
@@ -74,16 +75,16 @@ public class PrefsActivity extends SherlockPreferenceActivity {
         /* Changing the target file for settings
         *=======================================*/
         PreferenceManager prefMgr = getPreferenceManager();
-        prefMgr.setSharedPreferencesName(Const.Prefs.Main.FILE);
+        prefMgr.setSharedPreferencesName(Main.FILE);
         prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
 
         addPreferencesFromResource(R.xml.preference);
 
 
-        sharedPreferences = getSharedPreferences(Const.Prefs.Main.FILE, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Main.FILE, MODE_PRIVATE);
 
-        accountSharedPreferences = getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
-        isUserLogged = accountSharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false);
+        accountSharedPreferences = getSharedPreferences(WebApi.FILE, MODE_PRIVATE);
+        isUserLogged = accountSharedPreferences.getBoolean(WebApi.LOGGED, false);
 
         {
             pref_profile = findPreference("profile");
@@ -128,7 +129,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder changeLog = new AlertDialog.Builder(context);
-                changeLog.setMessage(Utils.readResource(context, R.raw.changelog, false, "\n"))
+                changeLog.setMessage(Utils.readResource(context, R.raw.changelog, "\n"))
                         .setTitle(R.string.pref_changelog).setCancelable(false);
                 changeLog.setPositiveButton(android.R.string.ok, null);
                 changeLog.create().show();
@@ -197,7 +198,7 @@ public class PrefsActivity extends SherlockPreferenceActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        isUserLogged = accountSharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false);
+        isUserLogged = accountSharedPreferences.getBoolean(WebApi.LOGGED, false);
         //noinspection ConstantConditions
         pref_logout.setEnabled(isUserLogged);
     }

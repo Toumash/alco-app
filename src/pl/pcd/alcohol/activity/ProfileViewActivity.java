@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.Action;
+import pl.pcd.alcohol.preferences.WebApi;
 
 public class ProfileViewActivity extends ThemeActivity {
 
@@ -59,7 +61,7 @@ public class ProfileViewActivity extends ThemeActivity {
         setContentViewWithTitle(context, R.layout.activ_profile_view, R.string.profile_title);
 
 
-        sharedPreferences = getSharedPreferences(Const.Prefs.WEB_API.FILE, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(WebApi.FILE, MODE_PRIVATE);
 
         tv_login = (TextView) findViewById(R.id.profile_view_login);
         tv_weight = (TextView) findViewById(R.id.profile_view_weight);
@@ -68,7 +70,7 @@ public class ProfileViewActivity extends ThemeActivity {
         tv_rat_count = (TextView) findViewById(R.id.profile_view_tv_ratings_count);
         linearLayout = (LinearLayout) findViewById(R.id.profile_view_linear);
 
-        if (!sharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false)) {
+        if (!sharedPreferences.getBoolean(WebApi.LOGGED, false)) {
             Intent loginIntent = new Intent(context, LoginActivity.class);
             startActivityForResult(loginIntent, REQUEST_LOGIN);
         }
@@ -77,7 +79,7 @@ public class ProfileViewActivity extends ThemeActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!sharedPreferences.getBoolean(Const.Prefs.WEB_API.LOGGED, false)) {
+        if (!sharedPreferences.getBoolean(WebApi.LOGGED, false)) {
             return;
         }
         updateData();
@@ -100,19 +102,19 @@ public class ProfileViewActivity extends ThemeActivity {
     }
 
     protected void updateData() {
-        tv_login.setText(sharedPreferences.getString(Const.Prefs.WEB_API.LOGIN, ""));
-        tv_email.setText(sharedPreferences.getString(Const.Prefs.WEB_API.EMAIL, ""));
-        tv_rat_count.setText(String.valueOf(sharedPreferences.getInt(Const.Prefs.WEB_API.RATINGS_COUNT, 0)));
+        tv_login.setText(sharedPreferences.getString(WebApi.LOGIN, ""));
+        tv_email.setText(sharedPreferences.getString(WebApi.EMAIL, ""));
+        tv_rat_count.setText(String.valueOf(sharedPreferences.getInt(WebApi.RATINGS_COUNT, 0)));
 
-        if (sharedPreferences.getFloat(Const.Prefs.WEB_API.WEIGHT, -1) == -1) {
+        if (sharedPreferences.getFloat(WebApi.WEIGHT, -1) == -1) {
             tv_weight.setText(getString(R.string.profile_no_data));
         } else {
-            tv_weight.setText(String.valueOf(sharedPreferences.getFloat(Const.Prefs.WEB_API.WEIGHT, -1)) + " kg");
+            tv_weight.setText(String.valueOf(sharedPreferences.getFloat(WebApi.WEIGHT, -1)) + " kg");
         }
         //sex
         {
             int rIdSex;
-            switch (sharedPreferences.getInt(Const.Prefs.WEB_API.SEX, -1)) {
+            switch (sharedPreferences.getInt(WebApi.SEX, -1)) {
                 case 0:
                     rIdSex = R.string.profile_female;
                     break;
@@ -158,9 +160,9 @@ public class ProfileViewActivity extends ThemeActivity {
             super();
             JSONObject rQ = new JSONObject();
             try {
-                rQ.put("action", Const.API.Actions.PROFILE_DOWNLOAD);
-                rQ.put("login", sharedPreferences.getString(Const.Prefs.WEB_API.LOGIN, ""));
-                rQ.put("password", Encryption.decodeBase64(sharedPreferences.getString(Const.Prefs.WEB_API.PASSWORD, "")));
+                rQ.put("action", Action.PROFILE_DOWNLOAD);
+                rQ.put("login", sharedPreferences.getString(WebApi.LOGIN, ""));
+                rQ.put("password", Encryption.decodeBase64(sharedPreferences.getString(WebApi.PASSWORD, "")));
 
             } catch (JSONException e) {
                 Log.d(TAG, e.toString());
@@ -202,12 +204,12 @@ public class ProfileViewActivity extends ThemeActivity {
 
                         JSONObject profile = result.getJSONObject("profile");
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt(Const.Prefs.WEB_API.SEX, profile.getInt("sex"));
-                        editor.putFloat(Const.Prefs.WEB_API.WEIGHT, Float.parseFloat(profile.getString("weight")));
-                        editor.putString(Const.Prefs.WEB_API.EMAIL, profile.getString("email"));
-                        editor.putInt(Const.Prefs.WEB_API.RATINGS_COUNT, profile.getInt("rat_count"));
+                        editor.putInt(WebApi.SEX, profile.getInt("sex"));
+                        editor.putFloat(WebApi.WEIGHT, Float.parseFloat(profile.getString("weight")));
+                        editor.putString(WebApi.EMAIL, profile.getString("email"));
+                        editor.putInt(WebApi.RATINGS_COUNT, profile.getInt("rat_count"));
                         editor.commit();
-                        if (Cfg.DEBUG) Log.d("PROFILE", profile.toString());
+                        if (Config.DEBUG) Log.d("PROFILE", profile.toString());
                         updateData();
                     } else {
                         Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();

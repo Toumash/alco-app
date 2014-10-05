@@ -17,6 +17,6 @@
 package pl.pcd.alcohol;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class Cfg {
+public class Config {
     public static final boolean DEBUG = false;
 }

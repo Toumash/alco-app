@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.preferences.WebApi;
 
 public class WebLogin extends AsyncTask<Void, Void, String> {
     public boolean isLogged = false;
@@ -43,14 +44,14 @@ public class WebLogin extends AsyncTask<Void, Void, String> {
         super();
         this.context = context;
         this.TAG = TAG;
-        this.sharedPreferences = context.getSharedPreferences(Const.Prefs.WEB_API.FILE, Context.MODE_PRIVATE);
-        this.username = this.sharedPreferences.getString(Const.Prefs.WEB_API.LOGIN, "");
-        this.password = Encryption.decodeBase64(this.sharedPreferences.getString(Const.Prefs.WEB_API.PASSWORD, ""));
-        this.encryptedPassword = this.sharedPreferences.getString(Const.Prefs.WEB_API.PASSWORD, "");
+        this.sharedPreferences = context.getSharedPreferences(WebApi.FILE, Context.MODE_PRIVATE);
+        this.username = this.sharedPreferences.getString(WebApi.LOGIN, "");
+        this.password = Encryption.decodeBase64(this.sharedPreferences.getString(WebApi.PASSWORD, ""));
+        this.encryptedPassword = this.sharedPreferences.getString(WebApi.PASSWORD, "");
         this.request = new JSONObject();
 
         try {
-            this.request.put("action", Const.API.Actions.LOGIN);
+            this.request.put("action", Action.LOGIN);
             this.request.put("login", this.username);
             this.request.put("password", this.password);
         } catch (JSONException e) {
@@ -86,11 +87,11 @@ public class WebLogin extends AsyncTask<Void, Void, String> {
                     Log.d(TAG, "Json post result: " + json.toString());
 
 
-                    if (code.equals(Const.API.LoginResult.OK)) this.result = Result.OK;
-                    else if (code.equals(Const.API.LoginResult.LOGIN_PASSWORD)) this.result = Result.LOGIN_PASSWORD;
+                    if (code.equals(ApiResult.OK)) this.result = Result.OK;
+                    else if (code.equals(ApiResult.LOGIN_PASSWORD)) this.result = Result.LOGIN_PASSWORD;
                     else this.result = Result.ERROR;
 
-                    if (code.equals(Const.API.LoginResult.OK)) {
+                    if (code.equals(ApiResult.OK)) {
                         isLogged = true;
                     }
 

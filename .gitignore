@@ -70,4 +70,4 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 
 # Store for TOKEN string
-src/pl/pcd/alcohol/alcoapi/Config.java
+src/pl/pcd/alcohol/alcoapi/ApiToken.java

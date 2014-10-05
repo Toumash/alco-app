@@ -28,28 +28,7 @@ import java.io.*;
 
 public class Utils {
 
-/*    public static void setListViewHeightBasedOnChildren(@NotNull ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
-
-    public static void getListViewSize(@NotNull ListView myListView) {
+/*  public static void getListViewSize(@NotNull ListView myListView) {
         ListAdapter myListAdapter = myListView.getAdapter();
         if (myListAdapter == null) {
             //do nothing return null
@@ -74,10 +53,9 @@ public class Utils {
      * Reads text resources from raw folder
      *
      * @param resId     text resource to read
-     * @param isJSON    pass true for JSON
      * @param delimiter null for no line delimiter
      */
-    public static String readResource(@NotNull Context ctx, int resId, boolean isJSON, @Nullable String delimiter) {
+    public static String readResource(@NotNull Context ctx, int resId, @Nullable String delimiter) {
         InputStream inputStream = ctx.getResources().openRawResource(resId);
 
         InputStreamReader inputReader = new InputStreamReader(inputStream);
@@ -93,8 +71,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isJSON) return text.substring(text.indexOf("{"));
-        else return text.toString();
+        return text.toString();
     }
 
     public static boolean isConnected(@NotNull Context context) {

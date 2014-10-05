@@ -16,11 +16,15 @@
 
 package pl.pcd.alcohol.alcoapi;
 
-import retrofit.RestAdapter;
-
-public class APIFactory {
-    public static AlcoAPI getAlcoAPIClient() {
-        RestAdapter x = new RestAdapter.Builder().setEndpoint("http://test.code-sharks.pl/alcohol/api/").setConverter(new AlcoAPIAdapter.AlcoJSONConverter()).build();
-        return x.create(AlcoAPI.class);
-    }
+public final class Action {
+    public static final String LOGIN = "login";
+    public static final String UPLOAD = "upload";
+    public static final String REGISTER = "register";
+    public static final String FLAG = "flag";
+    public static final String ISSUE = "issue";
+    public static final String PROFILE_DOWNLOAD = "profileDownload";
+    public static final String FETCH_RATINGS = "fetchRatings";
+    public static final String RATE = "rate";
+    public static final String REGISTER_INSTALLATION = "reg_installation";
+    public static final String UPDATE = "update";
 }

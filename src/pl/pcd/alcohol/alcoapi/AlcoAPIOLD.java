@@ -51,7 +51,7 @@ public class AlcoAPIOLD {
         InputStream inputStream = null;
         String result = "";
         try {
-            JSON.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(APICfg.TOKEN)));
+            JSON.put("api_token", Encryption.encodeBase64(Encryption.encodeBase64(ApiToken.TOKEN)));
 
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, connTimeout);

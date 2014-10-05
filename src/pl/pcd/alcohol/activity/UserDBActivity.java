@@ -36,11 +36,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
+import pl.pcd.alcohol.alcoapi.Action;
+import pl.pcd.alcohol.alcoapi.ApiResult;
 import pl.pcd.alcohol.alcoapi.WebLogin;
+import pl.pcd.alcohol.database.AlcoholCursorAdapter;
 import pl.pcd.alcohol.database.UserDB;
 
 
-public class DB_USER_Activity extends ThemeListActivity {
+public class UserDBActivity extends ThemeListActivity {
 
     public static final String TAG = "DB_UserActivity";
     @NotNull
@@ -221,7 +224,7 @@ public class DB_USER_Activity extends ThemeListActivity {
             JSONArray alcArray = new JSONArray();
             JSONObject alcohol;
             try {
-                JSON.put("action", Const.API.Actions.UPLOAD);
+                JSON.put("action", Action.UPLOAD);
                 JSON.put("login", username);
                 JSON.put("password", password);
 
@@ -394,7 +397,7 @@ public class DB_USER_Activity extends ThemeListActivity {
                         Log.d(TAG, "REQUERYING");
                     }
                 });
-            } else if (result.equals(Const.API.LoginResult.LOGIN_PASSWORD)) {
+            } else if (result.equals(ApiResult.LOGIN_PASSWORD)) {
                 Toast.makeText(context, R.string.login_invalid_data, Toast.LENGTH_LONG).show();
             }
             if (result.equals("error")) {
@@ -438,7 +441,7 @@ public class DB_USER_Activity extends ThemeListActivity {
         }
 
         public void onRightSwipe() {
-            Intent x = new Intent(context, DB_MAIN_Activity.class);
+            Intent x = new Intent(context, MainDBActivity.class);
             startActivity(x);
         }
     }

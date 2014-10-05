@@ -24,7 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import org.jetbrains.annotations.NotNull;
-import pl.pcd.alcohol.Cfg;
+import pl.pcd.alcohol.Config;
 import pl.pcd.alcohol.R;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
 import pl.pcd.alcohol.alcoapi.contract.User_Alcohol;
@@ -263,7 +263,7 @@ public class EditorActivity extends ThemeActivity {
                         Toast.makeText(context, R.string.alcohol_added, Toast.LENGTH_SHORT).show();
 
                         Log.d(TAG, "Alcohol added to database");
-                        if (Cfg.DEBUG) Log.d(TAG, et_name.getText().toString() + " "
+                        if (Config.DEBUG) Log.d(TAG, et_name.getText().toString() + " "
                                 + Float.valueOf(et_price.getText().toString()) + "zł "
                                 + Integer.valueOf(et_volume.getText().toString()) + "ml "
                                 + Float.valueOf(et_percent.getText().toString()) + "%");

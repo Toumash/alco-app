@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.pcd.alcohol.*;
 import pl.pcd.alcohol.activity.base.ThemeActivity;
+import pl.pcd.alcohol.alcoapi.Action;
 
 public class ReportBugActivity extends ThemeActivity {
     Button bt_send;
@@ -68,14 +69,14 @@ public class ReportBugActivity extends ThemeActivity {
                 if (title.length() > 4) {
                     JSONObject request = new JSONObject();
                     try {
-                        request.put("action", Const.API.Actions.ISSUE);
+                        request.put("action", Action.ISSUE);
                         request.put("title", title);
                         if (request.length() > 0) request.put("description", description);
                         if (user.length() > 0) request.put("user", user);
                         request.put("kind", kind);
                         request.put("priority", priority);
                     } catch (JSONException e) {
-                        if (Cfg.DEBUG) Log.e(TAG, e.toString());
+                        if (Config.DEBUG) Log.e(TAG, e.toString());
                     }
                     new ReportUploader().execute(request.toString());
                 } else {

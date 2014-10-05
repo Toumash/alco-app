@@ -14,13 +14,15 @@
  * limitations under the License.                                             *
  ******************************************************************************/
 
-package pl.pcd.alcohol.alcoapi;
+package pl.pcd.alcohol.preferences;
 
-public class APICfg {
-    public static final String API_URL = "http://test.code-sharks.pl/alcohol/api/";
-
-    public static final boolean testingServer = false;
-    private static final String testServer = "http://192.168.0.111";
-    private static final String productionServer = "http://dev.code-sharks.pl";
-    public static final String URL_BASE = testingServer ? testServer : productionServer;
+public final class WebApi {
+    public static final String FILE = "webapi";
+    public static final String PASSWORD = "p";
+    public static final String LOGIN = "l";
+    public static final String WEIGHT = "w";
+    public static final String SEX = "sex";
+    public static final String LOGGED = "lg";
+    public static final String EMAIL = "email";
+    public static final String RATINGS_COUNT = "ratings";
 }
