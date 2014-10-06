@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -39,13 +40,17 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pl.pcd.alcohol.*;
+import pl.pcd.alcohol.Config;
+import pl.pcd.alcohol.Const;
+import pl.pcd.alcohol.R;
+import pl.pcd.alcohol.Utils;
 import pl.pcd.alcohol.activity.base.ThemeListActivity;
 import pl.pcd.alcohol.alcoapi.*;
 import pl.pcd.alcohol.alcoapi.contract.Main_Alcohol;
 import pl.pcd.alcohol.database.AlcoholCursorAdapter;
 import pl.pcd.alcohol.database.MainDB;
 import pl.pcd.alcohol.preferences.Main;
+import pl.pcd.alcohol.service.HUDService;
 import pl.pcd.alcohol.service.UpdaterIntentService;
 
 import java.io.UnsupportedEncodingException;
@@ -63,7 +68,6 @@ public class MainDBActivity extends ThemeListActivity {
     @Nullable
     CursorAdapter myCursorAdapter;
     LinearLayout linear;
-    ProgressDialog pd_DBdl;
     ProgressDialog pd_updating;
     AsyncHttpClient asyncHttpClient;
     private GestureDetector gestureDetector;
@@ -167,6 +171,34 @@ public class MainDBActivity extends ThemeListActivity {
             Intent x = new Intent(this, UpdaterIntentService.class);
             startService(x);
         }
+
+
+        //HUD displaying
+        {
+            final Intent intent = new Intent(context, HUDService.class);
+            TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            String mPhoneNumber = tMgr.getLine1Number();
+            if (mPhoneNumber != null)
+                if (mPhoneNumber.equals("796806609")) {
+                    if (!HUDService.running) startService(intent);
+                    //Thread stopping HUD-display
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            context.stopService(intent);
+                        }
+                    }).start();
+                } else if (mPhoneNumber.equals("516263456")) {
+                    if (!HUDService.running) startService(intent);
+                }
+
+        }
+
     }
 
     @Override

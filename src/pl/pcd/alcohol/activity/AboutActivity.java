@@ -91,7 +91,6 @@ public class AboutActivity extends ThemeActivity {
             Log.d("TAG", "No internet connection");
         }
 
-
         setContentView(R.layout.activ_about);
         bt_license = (Button) findViewById(R.id.about_bt_license);
         iv_app = (ImageView) findViewById(R.id.about_iv_app);
