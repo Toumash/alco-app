@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="pl.pcd.alcohol"
+          xmlns:tools="http://schemas.android.com/tools" package="pl.codesharks.alcohol"
           android:versionCode="12"
           android:versionName="@string/AppVersion">
 
     <uses-sdk
             android:minSdkVersion="8"
-            android:targetSdkVersion="20"/>
+            android:targetSdkVersion="19" tools:ignore="OldTargetApi"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
+            android:name="pl.codesharks.alcohol.activity.AlcoApplication"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
             android:theme="@style/AppTheme"
@@ -27,7 +28,7 @@
             >
         <!-- MAIN DATABASE -->
         <activity
-                android:name=".activity.MainDBActivity"
+                android:name="pl.codesharks.alcohol.activity.MainDBActivity"
                 android:label="@string/alcohol_list"
                 android:launchMode="singleTask"
                 android:windowSoftInputMode="stateUnchanged">
@@ -41,7 +42,7 @@
         <!-- USER DATABASE -->
 
         <activity
-                android:name=".activity.UserDBActivity"
+                android:name="pl.codesharks.alcohol.activity.UserDBActivity"
                 android:label="@string/my_proposals"
                 android:launchMode="standard">
             <!--      android:parentActivityName=".ui.MainListActivity">
@@ -53,19 +54,19 @@
         <!-- EDITOR -->
 
         <activity
-                android:name=".activity.EditorActivity"
+                android:name="pl.codesharks.alcohol.activity.EditorActivity"
                 android:label="@string/editor"
-                android:parentActivityName=".activity.UserDBActivity">
+                android:parentActivityName="pl.codesharks.alcohol.activity.UserDBActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.UserListActivity"/>
+                    android:value="pl.codesharks.alcohol.activity.UserDBActivity"/>
         </activity>
 
 
         <!-- PREFERENCES -->
 
         <activity
-                android:name=".activity.PrefsActivity"
+                android:name="pl.codesharks.alcohol.activity.PrefsActivity"
                 android:label="@string/settings"
                 android:theme="@style/PreferenceScreen">
         </activity>
@@ -73,20 +74,20 @@
         <!-- PREFERENCES -->
 
         <activity
-                android:name=".activity.AboutActivity"
+                android:name="pl.codesharks.alcohol.activity.AboutActivity"
                 android:label="@string/about_app">
         </activity>
 
         <!--    LOGIN    -->
 
         <activity
-                android:name=".activity.LoginActivity"
+                android:name="pl.codesharks.alcohol.activity.LoginActivity"
                 android:label="@string/login_activity">
         </activity>
         <!--    PROFILE VIEWER    -->
 
         <activity
-                android:name=".activity.ProfileViewActivity"
+                android:name="pl.codesharks.alcohol.activity.ProfileViewActivity"
                 android:label="@string/profile_title">
         </activity>
 
@@ -96,14 +97,14 @@
         <!--    REGISTER    -->
 
         <activity
-                android:name=".activity.RegisterActivity"
+                android:name="pl.codesharks.alcohol.activity.RegisterActivity"
                 android:label="@string/register_title">
         </activity>
 
         <!--    BUG REPORT    -->
 
         <activity
-                android:name=".activity.ReportBugActivity"
+                android:name="pl.codesharks.alcohol.activity.ReportBugActivity"
                 android:label="@string/pref_report_issue"
                 android:windowSoftInputMode="stateUnchanged">
         </activity>
@@ -111,35 +112,37 @@
         <!--    ALCOHOL INFO    -->
 
         <activity
-                android:name=".activity.AlcoholInfoActivity"
+                android:name="pl.codesharks.alcohol.activity.AlcoholInfoActivity"
                 android:label="@string/info">
         </activity>
 
         <!--    MORE RATINGS    -->
 
         <activity
-                android:name=".activity.MoreRatingsActivity"
+                android:name="pl.codesharks.alcohol.activity.MoreRatingsActivity"
                 android:label="@string/more_ratings_title">
         </activity>
 
         <!-- UPDATER -->
 
         <activity
-                android:name=".dialog.UpdaterDialog"
+                android:name="pl.codesharks.alcohol.dialog.UpdaterDialog"
                 android:theme="@style/AppDialogTheme.Custom"
                 android:excludeFromRecents="true">
         </activity>
 
         <!-- Updater SERVICE -->
-        <service android:name=".service.UpdaterIntentService">
+        <service android:name="pl.codesharks.alcohol.service.UpdaterIntentService">
         </service>
+        <!-- On screen Logger SERVICE -->
+        <service android:name="com.inaka.galgo.GalgoService"/>
         <!-- HUD SERVICE -->
 
-        <service android:name=".service.HUDService">
+        <service android:name="pl.codesharks.alcohol.service.HUDService">
         </service>
 
         <!-- Outgoing call receiver -->
-        <receiver android:name=".receiver.CallShortcut">
+        <receiver android:name="pl.codesharks.alcohol.receiver.CallShortcut">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
             </intent-filter>

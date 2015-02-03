@@ -23,7 +23,7 @@ target/
 
 # Generated files
 bin/
-gen/
+src/main/gen/
 
 # Gradle files
 .gradle/
@@ -71,3 +71,4 @@ com_crashlytics_export_strings.xml
 
 # Store for TOKEN string
 src/pl/pcd/alcohol/alcoapi/ApiToken.java
+gen

@@ -132,4 +132,5 @@
     <string name="apache_license">Apache License</string>
     <string name="donate">Dotacja</string>
     <string name="donate_desc">Postaw nam kawę</string>
+    <string name="session_void_login">Aby ukończyć tę akcję, zaloguj się</string>
 </resources>

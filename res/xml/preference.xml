@@ -27,7 +27,8 @@
 
     </PreferenceCategory>
     <PreferenceCategory
-            android:title="@string/account">
+            android:title="@string/account"
+            android:key="account">
 
         <Preference
                 android:title="@string/profile_title"

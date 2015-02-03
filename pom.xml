@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <groupId>pl.codesharks.alcohol</groupId>
+    <artifactId>Alcohol</artifactId>
+    <version>12.0</version>
+
+
+    <properties>
+        <platform.version>4.2.2</platform.version>
+        <platform.sdk>19</platform.sdk>
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>4.1.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jakewharton</groupId>
+            <artifactId>butterknife</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.actionbarsherlock</groupId>
+            <artifactId>actionbarsherlock</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.loopj.android</groupId>
+            <artifactId>android-async-http</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <outputDirectory>target</outputDirectory>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <version>3.8.2.0</version>
+
+
+                    <configuration>
+
+                        <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
+                        <sourceDirectory>build</sourceDirectory>
+                        <outputDirectory>target</outputDirectory>
+                        <assetsDirectory>${project.basedir}/assets</assetsDirectory>
+                        <resourceDirectory>${project.basedir}/res</resourceDirectory>
+                        <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
+                        <sdk>
+                            <platform>${platform.sdk}</platform>
+                        </sdk>
+                        <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                        <packaging>apklib</packaging>
+                    </configuration>
+
+
+                    <extensions>true</extensions>
+                </plugin>
+
+
+            </plugins>
+
+        </pluginManagement>
+    </build>
+</project>

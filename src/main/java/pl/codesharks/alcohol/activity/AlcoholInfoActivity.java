@@ -1,0 +1,580 @@
+/******************************************************************************
+ * Copyright 2014 CodeSharks                                                  *
+ *                                                                            *
+ * Licensed under the Apache License, Version 2.0 (the "License");            *
+ * you may not use this file except in compliance with the License.           *
+ * You may obtain a copy of the License at                                    *
+ *                                                                            *
+ *     http://www.apache.org/licenses/LICENSE-2.0                             *
+ *                                                                            *
+ * Unless required by applicable law or agreed to in writing, software        *
+ * distributed under the License is distributed on an "AS IS" BASIS,          *
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   *
+ * See the License for the specific language governing permissions and        *
+ * limitations under the License.                                             *
+ ******************************************************************************/
+
+package pl.codesharks.alcohol.activity;
+
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.loopj.android.http.AsyncHttpClient;
+import org.apache.http.Header;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pl.codesharks.alcohol.*;
+import pl.codesharks.alcohol.activity.base.ThemeActivity;
+import pl.codesharks.alcohol.alcoapi.*;
+import pl.codesharks.alcohol.alcoapi.contract.Rating;
+import pl.codesharks.alcohol.database.MainDB;
+import pl.codesharks.alcohol.preferences.Main;
+
+import java.util.ArrayList;
+
+@SuppressWarnings("ResourceType")
+public class AlcoholInfoActivity extends ThemeActivity {
+    private static final int RATINGS_COUNT = 3;
+    public static int INFO_VIEW_ID = 111;
+    @NotNull
+    Context context = this;
+    TextView et_name, et_price, et_percent, et_volume, et_type, et_subtype;
+    CheckBox cb_deposit;
+    Button bt_more;
+    RatingBar rb_rate;
+    LinearLayout linear_for_ratings;
+    @NotNull
+    String TAG = "AlcoholInfo";
+    long alcoholId;
+    MainDB db;
+    Resources mRes;
+    SharedPreferences sharedPreferences;
+    AsyncHttpClient asyncHttpClient;
+
+    protected void openDB() {
+        db = new MainDB(context);
+        db.open();
+    }
+
+    protected void closeDB() {
+        if (db != null)
+            db.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeDB();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        closeDB();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentViewWithTitle(context, R.layout.activ_alcohol_info, R.string.info);
+
+        sharedPreferences = getSharedPreferences(Main.FILE, MODE_PRIVATE);
+
+        et_name = (TextView) findViewById(R.id.alcoholinfo_et_name);
+        et_price = (TextView) findViewById(R.id.alcoholinfo_et_price);
+        et_percent = (TextView) findViewById(R.id.alcoholinfo_et_percent);
+        et_volume = (TextView) findViewById(R.id.alcoholinfo_et_volume);
+        et_type = (TextView) findViewById(R.id.alcoholinfo_et_type);
+        et_subtype = (TextView) findViewById(R.id.alcoholinfo_et_subtype);
+        bt_more = (Button) findViewById(R.id.alcoholinfo_bt_more);
+        cb_deposit = (CheckBox) findViewById(R.id.alcoholinfo_cb_deposit);
+        rb_rate = (RatingBar) findViewById(R.id.alcoholinfo_rb_rate);
+        // lv_comments = (ListView) findViewById(R.id.alcoholinfo_lv_comments);
+        linear_for_ratings = (LinearLayout) findViewById(R.id.alcoholinfo_linear_ratings);
+
+        mRes = context.getResources();
+        openDB();
+
+        rb_rate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float r, boolean b) {
+                handleRating(r);
+            }
+        });
+
+        bt_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MoreRatingsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", alcoholId);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        Bundle xtr = getIntent().getExtras();
+
+        if (xtr != null) {
+            fillFieldsFromDB(xtr.getLong("id"));
+            if (sharedPreferences.getBoolean(Main.COMMENTS_AUTO_REFRESH, true)) {
+                fetchingRatings();
+            } else {
+                if (findViewById(INFO_VIEW_ID) != null)
+                    linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                TextView tv = new TextView(context);
+                tv.setText(R.string.alcoholinfo_ratings_autoload_off);
+                tv.setGravity(Gravity.CENTER_HORIZONTAL);
+                tv.setId(INFO_VIEW_ID);
+                linear_for_ratings.addView(tv);
+            }
+        } else {
+            finish();
+        }
+        this.asyncHttpClient = AlcoAPI.getAsyncHttpClient(context);
+    }
+
+    @Deprecated
+    private void handleFetchingRatings() {
+        if (Utils.isConnected(context)) {
+            RatingsDownloader downloader = new RatingsDownloader(alcoholId, RATINGS_COUNT) {
+                @Nullable
+                ProgressBar progressBar;
+
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    this.progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyle);
+                    this.progressBar.setIndeterminate(true);
+                    if (findViewById(INFO_VIEW_ID) != null)
+                        linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                    this.progressBar.setId(INFO_VIEW_ID);
+                    linear_for_ratings.addView(this.progressBar, 0);
+                }
+
+                @Override
+                protected void onPostExecute(Void x) {
+                    super.onPostExecute(x);
+                    if (this.result.equals(ApiResult.OK)) {
+                        linear_for_ratings.removeAllViews();
+                        LayoutInflater vi =
+                                (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        int i = 0;
+                        for (Rating rating : ratingList) {
+                            View view = vi.inflate(R.layout.rating_item, null);
+                            TextView author = (TextView) view.findViewById(R.id.comment_author);
+                            TextView content = (TextView) view.findViewById(R.id.comment_content);
+                            TextView date = (TextView) view.findViewById(R.id.comment_date);
+                            RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_rating);
+
+                            author.setText(rating.author);
+                            content.setText(rating.content);
+                            date.setText(rating.date);
+                            ratingBar.setRating(rating.rating);
+                            view.setId(100 + i);
+                            linear_for_ratings.addView(view);
+                            i++;
+                        }
+                        if (ratingList.size() <= RATINGS_COUNT) {
+                            bt_more.setEnabled(false);
+                        } else {
+                            bt_more.setEnabled(true);
+                        }
+                        //lv_comments.setAdapter(new RatingsAdapter(context, ratingList));
+                    } else if (this.result.equals("timeout")) {
+                        TextView error = new TextView(context);
+                        error.setText(R.string.network_error);
+                        error.setGravity(Gravity.CENTER_HORIZONTAL);
+                        error.setId(INFO_VIEW_ID);
+                        if (findViewById(INFO_VIEW_ID) != null)
+                            linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                        linear_for_ratings.addView(error, 0);
+                        bt_more.setEnabled(true);
+                    } else if (this.result.equals("no_comments")) {
+                        TextView error = new TextView(context);
+                        error.setText(R.string.alcoholinfo_no_ratings);
+                        error.setGravity(Gravity.CENTER_HORIZONTAL);
+                        error.setId(INFO_VIEW_ID);
+                        if (findViewById(INFO_VIEW_ID) != null)
+                            linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                        linear_for_ratings.addView(error, 0);
+                        bt_more.setEnabled(false);
+                    }
+                }
+            };
+            downloader.execute();
+        } else {
+            if (findViewById(INFO_VIEW_ID) != null)
+                linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+            TextView tv = new TextView(context);
+            tv.setText(R.string.no_internet);
+            tv.setGravity(Gravity.CENTER_HORIZONTAL);
+            tv.setId(INFO_VIEW_ID);
+            linear_for_ratings.addView(tv, 0);
+        }
+    }
+
+    private void fetchingRatings() {
+        if (Utils.isConnected(context)) {
+            JSONObject json = AlcoAPI.getJSONWithSession(context);
+            try {
+                json.put("id", alcoholId);
+                json.put("count", RATINGS_COUNT);
+            } catch (JSONException e) {
+                Log.e(TAG, "json creting for AlcoAPI error", e);
+            }
+
+            AlcoAPI.post(context, asyncHttpClient, NewActions.FETCH_RATINGS, json, 10000, new AlcoHttpResponseHandler() {
+                ArrayList<Rating> ratingList;
+
+                public void parseRatings(JSONArray jsonArray) {
+                    ratingList = new ArrayList<Rating>();
+                    final int length = jsonArray.length();
+                    try {
+                        for (int i = 0; i < length; i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            ratingList.add(new Rating(obj.getString("a"), obj.getString("c"), obj.getString("d"), obj.getInt("r")));
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+
+                @Override
+                public void onOK(int i, Header[] headers, JSONObject json) {
+                    String result = "";
+                    try {
+                        result = json.getString(ApiResult.KEY_RESULT);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "resulted json incorrect" + e.toString());
+                    }
+
+
+                    try {
+                        if (result.equals(ApiResult.RESULT_OK)) {
+                            parseRatings(json.getJSONArray("data"));
+
+                            linear_for_ratings.removeAllViews();
+
+                            if (ratingList.size() == 0) {
+                                displayInfoOnList(getString(R.string.alcoholinfo_no_ratings), false);
+                                return;
+                            }
+                            displayRatings();
+
+                            if (ratingList.size() <= RATINGS_COUNT) {
+                                bt_more.setEnabled(false);
+                            } else {
+                                bt_more.setEnabled(true);
+                            }
+                            //lv_comments.setAdapter(new RatingsAdapter(context, ratingList));
+
+                        } else {
+                            //RESULT=>ERROR
+                            String error_info = json.getString(ApiResult.KEY_ERROR_INFO);
+
+                            if (error_info.equals(ApiResult.NOT_FOUND)) {
+                                Log.e(TAG, "Alcohol not found, please request db update");
+                                //TODO:: Intent to update DB
+                            } else {
+                                Log.e(TAG, "Fetching ratings error: server responded with error");
+                                displayInfoOnList(getString(R.string.error), true);
+                            }
+                        }
+
+                    } catch (JSONException e) {
+
+                        Log.e(TAG, "Fetching ratings error: server responded with error");
+
+                        displayInfoOnList(getString(R.string.error), true);
+                    }
+                }
+
+                protected void displayRatings() {
+                    LayoutInflater vi =
+                            (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    int z = 0;
+                    for (Rating rating : ratingList) {
+                        View view = vi.inflate(R.layout.rating_item, null);
+                        TextView author = (TextView) view.findViewById(R.id.comment_author);
+                        TextView content = (TextView) view.findViewById(R.id.comment_content);
+                        TextView date = (TextView) view.findViewById(R.id.comment_date);
+                        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_rating);
+
+                        author.setText(rating.author);
+                        content.setText(rating.content);
+                        date.setText(rating.date);
+                        ratingBar.setRating(rating.rating);
+                        view.setId(100 + z);
+                        linear_for_ratings.addView(view);
+                        z++;
+                    }
+                }
+
+                private void displayInfoOnList(String text, boolean bt_moreEnabled) {
+                    TextView error = new TextView(context);
+                    error.setText(text);
+                    error.setGravity(Gravity.CENTER_HORIZONTAL);
+                    error.setId(INFO_VIEW_ID);
+                    if (findViewById(INFO_VIEW_ID) != null)
+                        linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                    linear_for_ratings.addView(error, 0);
+                    bt_more.setEnabled(bt_moreEnabled);
+                }
+
+                @Override
+                public void onFail(int i, Header[] headers, JSONObject json, Throwable throwable) {
+                    Log.e(TAG, "Fetching ratings error" + throwable.toString());
+
+                    TextView error = new TextView(context);
+                    error.setText(R.string.network_error);
+                    error.setGravity(Gravity.CENTER_HORIZONTAL);
+                    error.setId(INFO_VIEW_ID);
+                    if (findViewById(INFO_VIEW_ID) != null)
+                        linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+                    linear_for_ratings.addView(error, 0);
+                    bt_more.setEnabled(true);
+                }
+
+                @Override
+                public void onResponse(int httpCode) {
+
+                }
+            });
+        } else {
+            if (findViewById(INFO_VIEW_ID) != null)
+                linear_for_ratings.removeView(findViewById(INFO_VIEW_ID));
+            TextView tv = new TextView(context);
+            tv.setText(R.string.no_internet);
+            tv.setGravity(Gravity.CENTER_HORIZONTAL);
+            tv.setId(INFO_VIEW_ID);
+            linear_for_ratings.addView(tv, 0);
+
+        }
+    }
+
+    private void fillFieldsFromDB(long id) {
+        Cursor c = db.getRow(id);
+
+        /*  Do not remove this if statement, I donnt know why, but without it theres exception thrown
+            That is strange since db.getRow(long) already moves Cursor c to first position */
+        if (c.moveToFirst()) {
+            if (Config.DEBUG) Log.d("DB", "Columns Count: " + c.getColumnCount());
+            if (Config.DEBUG) Log.d("DB", "Rows Count: " + c.getCount());
+            alcoholId = c.getLong(c.getColumnIndexOrThrow(MainDB.KEY_ID_ALC));
+            et_name.setText(c.getString(c.getColumnIndexOrThrow(MainDB.KEY_NAME)));
+            et_price.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(MainDB.KEY_PRICE)) + "zł"));
+            et_percent.setText(String.valueOf(c.getFloat(c.getColumnIndexOrThrow(MainDB.KEY_PERCENT)) + "%"));
+            et_volume.setText(String.valueOf(c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_VOLUME)) + "ml"));
+
+            cb_deposit.setChecked(c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_DEPOSIT)) == 1);
+
+            et_type.setText(mRes.getStringArray(R.array.typy)[c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_TYPE))]);
+
+            String[] subtypes;
+            int arrayID;
+            switch (c.getInt(MainDB.COL_TYPE)) {
+                case 0:
+                    arrayID = R.array.niskoprocentowe;
+                    break;
+                case 1:
+                    arrayID = R.array.srednioprocentowe;
+                    break;
+                case 2:
+                    arrayID = R.array.wysokoprocentowe;
+                    break;
+                default:
+                    arrayID = R.array.niskoprocentowe;
+            }
+            subtypes = mRes.getStringArray(arrayID);
+            et_subtype.setText(subtypes[c.getInt(c.getColumnIndexOrThrow(MainDB.KEY_SUBTYPE))]);
+        }
+        c.close();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        //getMenuInflater().inflate(R.menu.alcohol_info, menu);
+        getSupportMenuInflater().inflate(R.menu.alcohol_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_alcoholinfo_flag:
+                handleReporting();
+                break;
+            case R.id.menu_alcoholinfo_refresh:
+                fetchingRatings();
+                break;
+            case R.id.menu_alcoholinfo_settings:
+                Intent intent = new Intent(context, PrefsActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
+
+    protected void handleReporting() {
+        new WebLogin(context, TAG) {
+            @Override
+            protected void onPostExecute(String x) {
+                super.onPostExecute(x);
+                if (this.result != Result.OK) {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    startActivityForResult(intent, Const.REQUEST_LOGIN);
+                    Log.d(TAG, "Saved login or/and password incorrect");
+                    return;
+                } else {
+                    final String username = this.username;
+                    final String password = this.password;
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+                    //alert.setTitle(R.string.flag);
+                    alert.setTitle(R.string.flag);
+
+                    final EditText input = new EditText(context);
+                    input.setLines(6);
+                    //input.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    input.setHint(R.string.give_us_additional_info);
+                    alert.setView(input);
+
+
+                    alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            JSONObject json = new JSONObject();
+                            try {
+                                json.put("login", username);
+                                json.put("password", password);
+                                json.put("action", Action.FLAG);
+                                json.put("id", alcoholId);
+                                //noinspection ConstantConditions
+                                json.put("content", input.getText().toString());
+/*                            JSONArray flags = new JSONArray();
+                    flags.put(new JSONObject().put("id",alcoholID).put("info","xddddd"));
+                    json.put("flag",flags);*/
+                                if (Config.DEBUG) Log.d(TAG, "sent json:\n" + json.toString());
+                                new AlcoholReporter(context).execute(json.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                    alert.setNegativeButton(android.R.string.cancel, null);
+                    alert.show();
+                }
+            }
+        }.execute();
+    }
+
+    protected void handleRating(final float r) {
+        new WebLogin(context, TAG) {
+            @Override
+            protected void onPostExecute(String x) {
+                super.onPostExecute(x);
+                if (this.result != Result.OK) {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    startActivityForResult(intent, Const.REQUEST_LOGIN);
+                    Log.d(TAG, "Saved login or/and password incorrect");
+                    return;
+                } else {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    View dialogLayout = getLayoutInflater().inflate(R.layout.ad_rate, null);
+                    alertDialog.setView(dialogLayout);
+                    final RatingBar rtBar = (RatingBar) dialogLayout.findViewById(R.id.alcoholinfo_ad_ratingBar);
+                    final EditText et_opinion = (EditText) dialogLayout.findViewById(R.id.alcoholinfo_ad_et_opinion);
+                    final String login = this.username;
+                    final String password = this.password;
+                    rtBar.setRating(r);
+                    alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            int rating = (int) rtBar.getRating();
+                            String opinion = et_opinion.getText().toString();
+                            JSONObject json = new JSONObject();
+
+                            try {
+                                json.put("action", Action.RATE);
+                                json.put("login", login);
+                                json.put("password", password);
+                                json.put("id", alcoholId);
+                                json.put("content", opinion);
+                                json.put("rate", rating);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            new AsyncTask<String, Void, String>() {
+                                ProgressDialog progressDialog;
+
+                                @Override
+                                protected void onPreExecute() {
+                                    super.onPreExecute();
+                                    this.progressDialog = new ProgressDialog(context);
+                                    progressDialog.setIndeterminate(true);
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.setMessage(getString(R.string.sending));
+                                    progressDialog.show();
+                                }
+
+                                @Nullable
+                                @Override
+                                protected String doInBackground(String... json) {
+                                    return JSONTransmitter.postJSON(json[0], Const.API.URL_JSON, 7000, 10000);
+                                }
+
+                                @Override
+                                protected void onPostExecute(@Nullable String s) {
+                                    super.onPostExecute(s);
+                                    progressDialog.cancel();
+                                    if (s != null) {
+                                        if (Config.DEBUG) Log.d(TAG, s);
+                                        String result = Utils.substringBetween(s, "<json>", "</json>");
+                                        JSONObject jsonObject;
+                                        try {
+                                            jsonObject = new JSONObject(result);
+                                            if (jsonObject.getString("result").equals("ok")) {
+                                                Toast.makeText(context, android.R.string.ok, Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(context, R.string.error, Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        rb_rate.setRating(0f);
+                                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                            }.execute(json.toString());
+                        }
+                    });
+                    alertDialog.show();
+                }
+
+
+            }
+
+
+        }.execute();
+    }
+}

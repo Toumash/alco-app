@@ -2,7 +2,8 @@
 <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbarAlwaysDrawHorizontalTrack="true">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/name"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <EditText
                             android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/type"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <Spinner
                             android:layout_width="wrap_content"
@@ -71,7 +72,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/subtype"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <Spinner
                             android:layout_width="match_parent"
@@ -89,7 +90,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/price"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <EditText
                             android:layout_width="58dp"
@@ -112,7 +113,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/volume"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <EditText
                             android:layout_width="match_parent"
@@ -134,7 +135,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/percent"
-                            android:layout_gravity="center_vertical|left"/>
+                            android:layout_gravity="center_vertical"/>
 
                     <EditText
                             android:layout_width="match_parent"
